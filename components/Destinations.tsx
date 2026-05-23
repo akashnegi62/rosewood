@@ -1,69 +1,106 @@
 "use client";
 
-import React, { useState } from "react";
-import { motion } from "framer-motion";
-import { ArrowLeft, ArrowRight, Sparkles } from "lucide-react";
+import React, { useState, useEffect, useCallback } from "react";
 import Image from "next/image";
+import { motion } from "framer-motion";
+import { ChevronLeft, ChevronRight, Sparkles } from "lucide-react";
 
-const DESTINATIONS = [
+// --- Types ---
+interface SlideData {
+  id: number;
+  country: string;
+  title: string;
+  imageUrl: string;
+  type: string;
+}
+
+// --- Mock Data ---
+const slides: SlideData[] = [
   {
     id: 1,
     country: "Japan",
     title: "In het hart van Honshu",
-    tag: "Individuele Reis",
-    image:
-      "https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&w=1200&q=80",
+    imageUrl: "/medias/63257/resize/1100x0/shutterstock-1220336509.webp",
+    type: "Individuele reis",
   },
   {
     id: 2,
     country: "Tibet & China",
-    title: "HET DAK VAN DE WERELD MET DE HEMELTREIN",
-    tag: "Individuele Reis",
-    image:
-      "https://images.unsplash.com/photo-1544085311-11a028465b03?auto=format&fit=crop&w=1200&q=80",
+    title: "Het dak van de wereld met de Hemeltrein",
+    imageUrl: "/medias/74624/resize/1100x0/billow926-304JgmUi1e8-unsplash.webp",
+    type: "Individuele reis",
   },
   {
     id: 3,
     country: "Costa Rica",
     title: "Het wilde zuiden van Costa Rica",
-    tag: "Individuele Reis",
-    image:
-      "https://images.unsplash.com/photo-1516026672322-bc52d61a55d5?auto=format&fit=crop&w=1200&q=80",
+    imageUrl:
+      "/medias/54854/resize/1100x0/Turrialbashutterstock-1062463487.webp",
+    type: "Individuele reis",
   },
   {
     id: 4,
     country: "Mexico",
     title: "Tesoros de México",
-    tag: "Individuele Reis",
-    image:
-      "https://images.unsplash.com/photo-1512813583145-baaa340ef29f?auto=format&fit=crop&w=1200&q=80",
+    imageUrl: "/medias/87750/resize/1100x0/Pueblashutterstock-125210186.webp",
+    type: "Individuele reis",
+  },
+  {
+    id: 5,
+    country: "Egypte",
+    title: "Eeuwigheid langs de Nijl",
+    imageUrl: "/medias/94219/resize/1100x0/KARNAK-TEMPLE-1.webp",
+    type: "Groep",
+  },
+  {
+    id: 6,
+    country: "Marokko",
+    title: "Van Atlas tot Sahara",
+    imageUrl: "/medias/94167/resize/1100x0/MERZOUGA-2.webp",
+    type: "Individuele reis",
+  },
+  {
+    id: 7,
+    country: "Kaapverdië",
+    title: "Fogo & Santiago",
+    imageUrl: "/medias/92434/resize/1100x0/Fogo-Ingrid.webp",
+    type: "Individuele reis",
   },
 ];
 
-export default function Destinations() {
-  const [activeIndex, setActiveIndex] = useState(1);
+const Carousel = () => {
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [isAnimating, setIsAnimating] = useState(false);
 
-  // Boundary checks to verify if we are at the edge limits
-  const isFirstSlide = activeIndex === 0;
-  const isLastSlide = activeIndex === DESTINATIONS.length - 1;
+  const nextSlide = useCallback(() => {
+    if (isAnimating) return;
+    setIsAnimating(true);
+    setCurrentIndex((prev) => (prev + 1) % slides.length);
+    setTimeout(() => setIsAnimating(false), 500);
+  }, [isAnimating]);
 
-  const handleNext = () => {
-    if (!isLastSlide) {
-      setActiveIndex((prev) => prev + 1);
-    }
-  };
+  const prevSlide = useCallback(() => {
+    if (isAnimating) return;
+    setIsAnimating(true);
+    setCurrentIndex((prev) => (prev - 1 + slides.length) % slides.length);
+    setTimeout(() => setIsAnimating(false), 500);
+  }, [isAnimating]);
 
-  const handlePrev = () => {
-    if (!isFirstSlide) {
-      setActiveIndex((prev) => prev - 1);
-    }
-  };
+  // Keyboard navigation
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "ArrowRight") nextSlide();
+      if (e.key === "ArrowLeft") prevSlide();
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [nextSlide, prevSlide]);
 
   return (
     <section className="bg-white text-black py-24 px-4 overflow-hidden w-full select-none">
       <div className="max-w-7xl mx-auto">
         {/* 1. Header Block */}
-        <div className="text-center mb-16 flex flex-col items-center">
+        <div className="text-center flex flex-col items-center">
           <motion.div className="inline-flex items-center gap-2 bg-black backdrop-blur-md rounded-full px-4 py-1.5 text-xs text-white font-medium tracking-wider uppercase mb-6">
             <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
             Explore 200+ Destinations
@@ -77,123 +114,140 @@ export default function Destinations() {
           </p>
         </div>
 
-        {/* 2. Focused Carousel Container */}
-        <div className="relative flex items-center justify-center h-130 md:h-115 w-full">
-          <div className="relative w-full max-w-6xl overflow-visible flex items-center justify-center">
-            {/* The sliding track centered perfectly via CSS calc */}
-            <motion.div
-              animate={{
-                x: `calc(25% - (${activeIndex} * 50%) - (${activeIndex} * 24px))`,
-              }}
-              transition={{
-                type: "spring",
-                stiffness: 170,
-                damping: 22,
-                mass: 0.8,
-              }}
-              className="flex items-center gap-6 md:gap-8 w-full justify-start"
-            >
-              {DESTINATIONS.map((item, index) => {
-                const isCenter = index === activeIndex;
+        {/* Carousel Container */}
+        <div className="relative w-full h-150 bg-white overflow-hidden flex items-center justify-center">
+          {/* Carousel Track */}
+          <div className="relative w-full h-full max-w-400 flex items-center justify-center">
+            {slides.map((slide, index) => {
+              // Calculate distance from current index for circular carousel logic
+              let distance = index - currentIndex;
+              if (distance < -slides.length / 2) distance += slides.length;
+              if (distance > slides.length / 2) distance -= slides.length;
 
-                return (
-                  <motion.div
-                    key={item.id}
-                    onClick={() => setActiveIndex(index)}
-                    animate={{
-                      opacity: isCenter ? 1 : 0.5,
-                      scale: isCenter ? 1.05 : 0.92,
-                      zIndex: isCenter ? 10 : 1,
-                    }}
-                    transition={{ type: "spring", stiffness: 170, damping: 22 }}
-                    className="relative flex flex-col cursor-pointer shrink-0 w-[70%] sm:w-[50%] transition-all duration-300"
-                  >
-                    {/* Card Image Area */}
-                    <div className="relative aspect-4/3 w-full overflow-hidden shadow-md">
-                      <Image
-                        src={item.image}
-                        alt={item.title}
-                        fill
-                        sizes="(max-w-768px) 100vw, 600px"
-                        className="object-cover brightness-[0.85] hover:scale-105 transition-transform duration-700"
-                      />
+              // Determine styles based on distance
+              // We use 'distance' to determine scale, x-position, and z-index
+              const isActive = distance === 0;
 
-                      {/* Tag Badge overlay */}
-                      <div className="absolute top-4 right-4 bg-white/95 text-black/90 text-[10px] tracking-wider font-medium px-3 py-1.5 rounded flex items-center gap-1.5 shadow-sm z-20">
-                        <Sparkles className="w-3 h-3 text-black/90" />
-                        <span className="uppercase">{item.tag}</span>
-                      </div>
+              // Visual configuration
+              let scale = 0.7;
+              let xOffset = 0;
+              let zIndex = 10;
+              let opacity = 0.5;
 
-                      {/* Center Overlay Text */}
-                      <motion.div
-                        initial={false}
-                        animate={{ opacity: isCenter ? 1 : 0 }}
-                        transition={{ duration: 0.2 }}
-                        className="absolute inset-0 bg-black/20 flex flex-col justify-end p-6 md:p-10 text-center pointer-events-none"
-                      >
-                        <span className="text-cyan-400 font-medium text-sm md:text-base mb-1">
-                          {item.country}
-                        </span>
-                        <h3 className="text-white text-xl md:text-3xl font-medium tracking-wide leading-tight uppercase">
-                          {item.title}
-                        </h3>
-                      </motion.div>
+              // Config for "6 images in frame" look
+              // We want side images to be visible but smaller and offset
+              if (isActive) {
+                scale = 1;
+                xOffset = 0;
+                zIndex = 50;
+                opacity = 1;
+              } else if (Math.abs(distance) === 1) {
+                scale = 0.88;
+                xOffset = distance > 0 ? 320 : -320; // Closer spacing to fit more
+                zIndex = 40;
+                opacity = 1; // Clean images, no fade
+              } else if (Math.abs(distance) === 2) {
+                scale = 0.78;
+                xOffset = distance > 0 ? 560 : -560;
+                zIndex = 30;
+                opacity = 1; // Clean images
+              } else if (Math.abs(distance) === 3) {
+                scale = 0.68;
+                xOffset = distance > 0 ? 740 : -740;
+                zIndex = 20;
+                opacity = 0.8; // Slight opacity for outer edges
+              } else {
+                // Hide slides that are too far away
+                scale = 0.6;
+                xOffset = distance > 0 ? 900 : -900;
+                zIndex = 10;
+                opacity = 0;
+              }
+
+              return (
+                <motion.div
+                  key={slide.id}
+                  className="absolute top-1/2 left-1/2 w-125 h-100 -ml-62.5 -mt-50 rounded-sm overflow-hidden cursor-pointer shadow-xl bg-white"
+                  style={{
+                    zIndex,
+                  }}
+                  animate={{
+                    x: xOffset,
+                    scale,
+                    opacity,
+                  }}
+                  transition={{
+                    type: "spring",
+                    stiffness: 100,
+                    damping: 20,
+                    mass: 1,
+                  }}
+                  onClick={() => {
+                    // Click side slides to navigate
+                    if (distance === 1) nextSlide();
+                    if (distance === -1) prevSlide();
+                  }}
+                >
+                  {/* Image Container - Clean, no brightness filter */}
+                  <div className="relative w-full h-full">
+                    <Image
+                      // Fallback to picsum if relative path fails in demo
+                      src={`https://picsum.photos/seed/${slide.id}/1200/900`}
+                      alt={slide.title}
+                      fill
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+
+                  {/* Content Overlay - Only fully visible on active slide */}
+                  <div className="absolute inset-0 flex flex-col items-center justify-center text-white p-8 text-center bg-black/10">
+                    {/* Badge */}
+                    <div
+                      className={`absolute top-4 right-4 bg-white/95 backdrop-blur-sm text-black px-3 py-1.5 rounded-full flex items-center gap-2 text-[10px] font-bold uppercase tracking-wider shadow-sm transition-all duration-300 ${isActive ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2"}`}
+                    >
+                      <Sparkles size={10} />
+                      {slide.type}
                     </div>
 
-                    {/* Non-Center Details underneath */}
-                    <motion.div
-                      initial={false}
-                      animate={{
-                        opacity: !isCenter ? 1 : 0,
-                        y: !isCenter ? 0 : 4,
-                      }}
-                      transition={{ duration: 0.2 }}
-                      className="pt-4 text-left pointer-events-none"
+                    {/* Text Content */}
+                    <div
+                      className={`transition-all duration-500 transform ${isActive ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
                     >
-                      <span className="text-xs text-black font-medium block mb-0.5">
-                        {item.country}
-                      </span>
-                      <h4 className="text-black text-sm font-medium truncate tracking-wide">
-                        {item.title}
-                      </h4>
-                    </motion.div>
-                  </motion.div>
-                );
-              })}
-            </motion.div>
+                      <p className="font-serif italic text-lg mb-2 opacity-90 drop-shadow-md">
+                        {slide.country}
+                      </p>
+                      <h2 className="font-serif text-3xl md:text-4xl font-light leading-tight uppercase max-w-[80%] mx-auto drop-shadow-md">
+                        {slide.title}
+                      </h2>
+                    </div>
+                  </div>
+                </motion.div>
+              );
+            })}
           </div>
-        </div>
 
-        {/* 3. Slider Navigation Utilities */}
-        <div className="flex items-center justify-center gap-3 max-w-6xl mx-auto mt-8 px-4">
-          <button
-            onClick={handlePrev}
-            disabled={isFirstSlide}
-            className={`p-3 rounded-full transition active:scale-95 text-white bg-black 
-              ${
-                isFirstSlide
-                  ? "bg-black/90 text-white cursor-not-allowed active:scale-100"
-                  : ""
-              }`}
-            aria-label="Previous Slide"
-          >
-            <ArrowLeft className="w-4 h-4" />
-          </button>
-          <button
-            onClick={handleNext}
-            disabled={isLastSlide}
-            className={`p-3 rounded-full transition active:scale-95 text-white bg-black
-              ${
-                isLastSlide
-                  ? "bg-black/90 text-white cursor-not-allowed active:scale-100"
-                  : ""
-              }`}
-            aria-label="Next Slide"
-          >
-            <ArrowRight className="w-4 h-4" />
-          </button>
+          {/* Navigation Controls */}
+          <div className="absolute bottom-0 left-1/2 -translate-x-1/2 flex gap-3 z-100">
+            <button
+              onClick={prevSlide}
+              className="w-10 h-10 bg-black text-white rounded-full flex items-center justify-center"
+              aria-label="Previous slide"
+            >
+              <ChevronLeft size={20} />
+            </button>
+            <button
+              onClick={nextSlide}
+              className="w-10 h-10 bg-black text-white rounded-full flex items-center justify-center"
+              aria-label="Next slide"
+            >
+              <ChevronRight size={20} />
+            </button>
+          </div>
         </div>
       </div>
     </section>
   );
-}
+};
+
+export default Carousel;

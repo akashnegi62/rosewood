@@ -17,7 +17,7 @@ export default function Navbar() {
   }, [isSearchOpen]);
 
   return (
-    <header className="fixed top-5 left-0 right-0 z-50 px-6 py-4 flex items-center justify-between max-w-7xl mx-auto w-full">
+    <header className="fixed top-5 left-0 right-0 z-99 px-6 py-4 flex items-center justify-between max-w-7xl mx-auto w-full">
       {/* 1. Brand Logo - Styled from Image 1 / Image 2 blend */}
       <Link href="/" className="flex items-center gap-2 group z-50">
         <div className="text-white font-serif text-2xl tracking-wide flex flex-col leading-none">
