@@ -58,7 +58,7 @@ const MEMBERSHIPS = [
 
 export default function Membersec() {
   return (
-    <section className="bg-black w-full overflow-hidden font-sans">
+    <section className="bg-black w-full overflow-hidden">
       {/* SECTION 1: Club Elevate INFO (BLACK, WHITE, & CYAN ACENTS) */}
       <div className="relative py-24 px-6 max-w-6xl mx-auto text-center z-10">
         {/* Subtle Decorative Abstract Lines Background */}
@@ -73,19 +73,19 @@ export default function Membersec() {
 
         {/* Central Brand Emblem */}
         <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-linear-to-tr from-neutral-900 to-neutral-800 border border-neutral-700/60 shadow-xl mb-6">
-          <span className="text-white font-medium text-xl tracking-wider">
+          <span className="text-white font-[Vera] text-xl tracking-wider">
             CE
           </span>
         </div>
 
-        <h2 className="text-xs font-bold tracking-[0.3em] text-white uppercase mb-3">
+        <h2 className="text-lg font-[Vera] tracking-[0.3em] text-white uppercase mb-3">
           Club Elevate
         </h2>
-        <h3 className="text-3xl md:text-5xl font-bold tracking-tight text-white mb-6">
+        <h3 className="text-3xl md:text-5xl font-[Vera] tracking-tight text-white mb-6">
           A World of Privileged Access
         </h3>
 
-        <p className="text-neutral-300 font-light text-sm md:text-base max-w-3xl mx-auto leading-relaxed mb-16">
+        <p className="text-neutral-300 font-medium text-sm md:text-base max-w-3xl mx-auto leading-relaxed mb-16">
           Club Elevate unlocks privileged access to 140+ premium Club Mahindra
           resorts, offering 7 nights/8 days holidays every year — filled with
           cherished family moments and thoughtfully crafted experiences across
@@ -96,7 +96,7 @@ export default function Membersec() {
 
         {/* Open Grid Layout for Key Benefits (Box & Border Removed) */}
         <div className="max-w-4xl mx-auto">
-          <h4 className="text-sm font-semibold tracking-[0.15em] text-cyan-400 uppercase text-center mb-8 flex items-center justify-center gap-2">
+          <h4 className="text-lg font-[Vera] tracking-[0.15em] text-cyan-400 uppercase text-center mb-8 flex items-center justify-center gap-2">
             <Star className="w-4 h-4 fill-cyan-400" /> Key Privileged Benefits
           </h4>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-left">
@@ -118,12 +118,11 @@ export default function Membersec() {
       {/* SECTION 2: MEMBERSHIP PLANS (3D TILT CARDS) */}
       <div className="bg-white text-black rounded-t-[2.5rem] py-24 px-6 w-full">
         <div className="max-w-7xl mx-auto text-center">
-          <h3 className="text-2xl md:text-4xl font-bold tracking-tight text-black mb-3">
+          <h3 className="text-2xl md:text-6xl font-[Vera] tracking-tight text-black mb-5">
             Your Key to Unlock Privileged Experiences
           </h3>
-          <p className="text-black text-xs md:text-sm font-medium tracking-wide mb-14 uppercase">
-            Select from{" "}
-            <span className="text-black font-bold">Ebony</span>,{" "}
+          <p className="text-black text-xs md:text-lg font-medium tracking-wide mb-14 uppercase">
+            Select from <span className="text-black font-bold">Ebony</span>,{" "}
             <span className="text-neutral-900 font-bold">Ivory</span>, and{" "}
             <span className="text-[#165B54] font-bold">Jade</span> Keys and
             enter a world of seamless vacations

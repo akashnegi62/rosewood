@@ -70,7 +70,7 @@ export default function Home() {
         {/* Hero Headlines */}
         <motion.h1
           variants={itemVariants}
-          className="text-4xl md:text-8xl font-medium tracking-tight text-white max-w-4xl leading-tightest"
+          className="text-4xl md:text-8xl font-[Vera] tracking-tight text-white max-w-4xl leading-tightest"
         >
           Discover Your Next <br />
           <span className="bg-linear-to-r from-cyan-400 via-white to-cyan-500 bg-clip-text text-transparent">
