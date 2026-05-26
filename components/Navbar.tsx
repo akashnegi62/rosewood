@@ -4,10 +4,12 @@ import React, { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Search, X, ChevronDown, ArrowUpRight } from "lucide-react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 export default function Navbar() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+  const pathname = usePathname();
 
   // Focus the input automatically when search opens
   useEffect(() => {
@@ -16,15 +18,19 @@ export default function Navbar() {
     }
   }, [isSearchOpen]);
 
+  if (pathname === "/login" || pathname === "/signup") {
+    return null;
+  }
+
   return (
     <header className="fixed top-5 left-0 right-0 z-99 px-6 py-4 flex items-center justify-between max-w-7xl mx-auto w-full">
       {/* 1. Brand Logo - Styled from Image 1 / Image 2 blend */}
       <Link href="/" className="flex items-center gap-2 group z-50">
-        <div className="text-white font-serif text-2xl tracking-wide flex flex-col leading-none">
-          <span className="text-[10px] tracking-[0.2em] font-sans text-gray-300 uppercase">
-            Travel
+        <div className="text-white font-[Vera] text-2xl tracking-wide flex flex-col leading-none">
+          <span className="font-semibold">ROSEWOOD</span>
+          <span className="text-[12px] tracking-[0.2em] font-medium text-white uppercase">
+            WORLDWIDE TRAVELS
           </span>
-          <span className="font-semibold">sensations</span>
         </div>
       </Link>
 
@@ -46,7 +52,7 @@ export default function Navbar() {
               className="flex items-center justify-between w-full text-sm font-medium text-gray-700 px-3"
             >
               <Link
-                href="#"
+                href="/resorts"
                 className="hover:text-black transition-colors px-3 py-1"
               >
                 Resorts
@@ -59,7 +65,7 @@ export default function Navbar() {
               </div>
 
               <Link
-                href="#"
+                href="/clubelevate"
                 className="hover:text-black transition-colors px-3 py-1 font-semibold flex items-center gap-1"
               >
                 <span className="bg-black text-white px-2.5 py-1.5 rounded-full text-sm tracking-wider">
@@ -69,13 +75,13 @@ export default function Navbar() {
               </Link>
 
               <Link
-                href="#"
+                href="/blogs"
                 className="hover:text-black transition-colors px-3 py-1"
               >
                 Blog
               </Link>
               <Link
-                href="#"
+                href="/login"
                 className="hover:text-black transition-colors px-3 py-1"
               >
                 Member Login
