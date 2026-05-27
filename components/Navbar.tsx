@@ -58,17 +58,42 @@ export default function Navbar() {
                 Resorts
               </Link>
 
-              {/* Dropdown Example */}
+              {/* Experiences Dropdown */}
               <div className="relative group cursor-pointer flex items-center gap-1 hover:text-black transition-colors px-3 py-1">
-                <span>Experiences</span>
-                <ChevronDown className="w-4 h-4 transition-transform group-hover:rotate-180" />
+                <Link href="/experiences" className="flex items-center gap-1">
+                  <span>Experiences</span>
+                  <ChevronDown className="w-4 h-4 transition-transform group-hover:rotate-180" />
+                </Link>
+                {/* Dropdown Menu Container */}
+                <div className="absolute top-full left-1/2 -translate-x-1/2 pt-4 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-all duration-300 ease-out z-50">
+                  <div className="bg-white/95 backdrop-blur-md border border-neutral-100 rounded-2xl shadow-xl p-2 w-48 flex flex-col gap-1 text-gray-700">
+                    <Link
+                      href="/experiences"
+                      className="px-4 py-2.5 rounded-xl hover:bg-neutral-50 hover:text-black transition-colors font-medium text-xs tracking-wider uppercase text-left"
+                    >
+                      All Experiences
+                    </Link>
+                    <Link
+                      href="/national"
+                      className="px-4 py-2.5 rounded-xl hover:bg-neutral-50 hover:text-black transition-colors font-medium text-xs tracking-wider uppercase text-left border-t border-neutral-100/50"
+                    >
+                      National
+                    </Link>
+                    <Link
+                      href="/international"
+                      className="px-4 py-2.5 rounded-xl hover:bg-neutral-50 hover:text-black transition-colors font-medium text-xs tracking-wider uppercase text-left"
+                    >
+                      International
+                    </Link>
+                  </div>
+                </div>
               </div>
 
               <Link
                 href="/clubelevate"
                 className="hover:text-black transition-colors px-3 py-1 font-semibold flex items-center gap-1"
               >
-                <span className="bg-black text-white px-2.5 py-1.5 rounded-full text-sm tracking-wider">
+                <span className="bg-black text-white h-[2vw] w-[2vw] flex justify-center items-center rounded-full text-sm tracking-wider">
                   C
                 </span>
                 Club Elevate
@@ -129,7 +154,7 @@ export default function Navbar() {
       {/* 3. Action Button (Join Keystone / Agent Hub with Arrow) */}
       <div className="flex items-center gap-4 z-50">
         <Link
-          href="#"
+          href="/join"
           className="bg-black hover:bg-white text-white hover:text-black rounded-full px-6 py-3 text-sm font-medium tracking-wide shadow-md transition-all flex items-center gap-2 group whitespace-nowrap"
         >
           <span>Join Club Elevate</span>

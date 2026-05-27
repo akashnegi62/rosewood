@@ -228,21 +228,25 @@ const Carousel = () => {
           </div>
 
           {/* Navigation Controls */}
-          <div className="absolute bottom-0 left-1/2 -translate-x-1/2 flex gap-3 z-100">
-            <button
+          <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-3 z-100">
+            <motion.button
               onClick={prevSlide}
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.95 }}
               className="w-10 h-10 bg-black text-white rounded-full flex items-center justify-center"
               aria-label="Previous slide"
             >
               <ChevronLeft size={20} />
-            </button>
-            <button
+            </motion.button>
+            <motion.button
               onClick={nextSlide}
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.95 }}
               className="w-10 h-10 bg-black text-white rounded-full flex items-center justify-center"
               aria-label="Next slide"
             >
               <ChevronRight size={20} />
-            </button>
+            </motion.button>
           </div>
         </div>
       </div>

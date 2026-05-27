@@ -31,7 +31,7 @@ const OVERVIEW_SECTIONS = [
 
 export default function Overview() {
   return (
-    <section className="bg-black text-white w-full overflow-hidden flex flex-col gap-24 py-16 lg:py-24">
+    <section className="bg-white text-black w-full overflow-hidden flex flex-col gap-24 py-16 lg:py-24">
       {OVERVIEW_SECTIONS.map((section, index) => {
         // True = Text Left, Image Right | False = Image Left, Text Right
         const isTextLeft = index % 2 === 0;
@@ -52,17 +52,17 @@ export default function Overview() {
               }`}
             >
               {/* Micro-Header Tag */}
-              <span className="text-[10px] md:text-lg font-[Vans] tracking-[0.3em] text-neutral-400 uppercase mb-5 block">
+              <span className="text-[10px] md:text-lg font-[Vans] tracking-[0.3em] text-neutral-800 uppercase mb-5 block">
                 {section.tag}
               </span>
 
               {/* Luxury Headline */}
-              <h2 className="text-3xl sm:text-4xl xl:text-5xl  font-[Vans] tracking-tight text-white mb-6 leading-[1.2]">
+              <h2 className="text-3xl sm:text-4xl xl:text-5xl  font-[Vans] tracking-tight text-black mb-6 leading-[1.2]">
                 {section.headline}
               </h2>
 
               {/* Core Description Copy */}
-              <div className="space-y-5 text-neutral-300 font-medium text-sm xl:text-base leading-relaxed tracking-wide max-w-xl">
+              <div className="space-y-5 text-neutral-800 font-medium text-sm xl:text-base leading-relaxed tracking-wide max-w-xl">
                 {section.paragraphs.map((p, pIdx) => (
                   <p key={pIdx}>{p}</p>
                 ))}

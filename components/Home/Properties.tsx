@@ -53,7 +53,7 @@ export default function Properties() {
   const next = () => setOffset((o) => Math.min(maxOffset, o + 1));
 
   return (
-    <section className="w-full min-h-screen bg-black flex items-center py-24">
+    <section className="w-full min-h-screen bg-white flex items-center py-24">
       <div className="w-full max-w-7xl mx-auto px-6 flex flex-col items-center">
         {/* 1. Header Block */}
         <div className="text-center flex flex-col items-center mb-16">
@@ -61,10 +61,10 @@ export default function Properties() {
             <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
             Explore 200+ Resorts
           </motion.div>
-          <h2 className="text-4xl md:text-8xl font-[Vera] tracking-tight text-white mb-4">
+          <h2 className="text-4xl md:text-8xl font-[Vera] tracking-tight text-black mb-4">
             Popular Resorts
           </h2>
-          <p className="text-neutral-400 font-light text-sm md:text-lg max-w-xl leading-relaxed">
+          <p className="text-neutral-800 font-light text-sm md:text-lg max-w-xl leading-relaxed">
             From oceanfront luxury villas to secluded mountain retreats, find your perfect resort getaway.
           </p>
         </div>
@@ -77,8 +77,7 @@ export default function Properties() {
               onClick={prev}
               disabled={offset === 0}
               whileTap={offset > 0 ? { scale: 0.94 } : {}}
-              className="w-12 h-12 rounded-full border border-white/20 flex items-center justify-center hover:bg-white/10 hover:border-white/40 transition-colors disabled:opacity-30"
-              style={{ background: "rgba(255,255,255,0.12)" }}
+              className="w-12 h-12 rounded-full bg-black flex items-center justify-center hover:bg-neutral-800 transition-colors disabled:opacity-30"
             >
               <ArrowLeft size={18} strokeWidth={1.8} className="text-white" />
             </motion.button>
@@ -86,8 +85,7 @@ export default function Properties() {
               onClick={next}
               disabled={offset >= maxOffset}
               whileTap={offset < maxOffset ? { scale: 0.94 } : {}}
-              className="w-12 h-12 rounded-full border border-white/20 flex items-center justify-center hover:bg-white/10 hover:border-white/40 transition-colors disabled:opacity-30"
-              style={{ background: "rgba(255,255,255,0.12)" }}
+              className="w-12 h-12 rounded-full bg-black flex items-center justify-center hover:bg-neutral-800 transition-colors disabled:opacity-30"
             >
               <ArrowRight size={18} strokeWidth={1.8} className="text-white" />
             </motion.button>

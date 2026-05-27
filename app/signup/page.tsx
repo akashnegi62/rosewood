@@ -33,7 +33,7 @@ export default function SignupPage() {
     <div className="min-h-screen w-full flex flex-col md:flex-row relative overflow-x-hidden select-none font-sans">
       {/* Background Image */}
       <Image
-        src="https://images.unsplash.com/photo-1602088113235-229c19758e9f?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8dmFjYXRpb25sJTIwaG9yaXpvbmF0YWx8ZW58MHx8MHx8fDA%3D"
+        src="https://images.unsplash.com/photo-1506929562872-bb421503ef21?auto=format&fit=crop&w=2000&q=80"
         alt="Travel Destination Background"
         fill
         priority

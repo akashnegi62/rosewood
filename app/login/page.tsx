@@ -26,7 +26,7 @@ export default function LoginPage() {
     <div className="min-h-screen w-full flex flex-col md:flex-row relative overflow-x-hidden select-none font-sans">
       {/* Background Image */}
       <Image
-        src="https://plus.unsplash.com/premium_photo-1680994646563-7562de211719?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8dmFjYXRpb25sJTIwaG9yaXpvbmF0YWx8ZW58MHx8MHx8fDA%3D"
+        src="https://images.unsplash.com/photo-1533105079780-92b9be482077?auto=format&fit=crop&w=1600&q=85"
         alt="Travel Destination Background"
         fill
         priority

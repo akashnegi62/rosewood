@@ -16,25 +16,21 @@ const features = [
     num: "01",
     icon: CalendarCheck,
     title: "Easy Booking Process",
-    color: "#e8896a",
   },
   {
     num: "02",
     icon: MapPinned,
     title: "Travel Arrangements",
-    color: "#5abcb0",
   },
   {
     num: "03",
     icon: BadgeDollarSign,
     title: "Affordable Price",
-    color: "#e8896a",
   },
   {
     num: "04",
     icon: UserRound,
     title: "Private Guide",
-    color: "#5abcb0",
   },
 ];
 
@@ -141,19 +137,19 @@ export default function Getstarted() {
 
           {/* Feature list */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-10">
-            {features.map(({ num, icon: Icon, title, color }, i) => (
+            {features.map(({ num, icon: Icon, title }, i) => (
               <FadeUp key={num} delay={0.4 + i * 0.1}>
                 <motion.div
-                  whileHover={{ y: -4, borderColor: `${color}50` }}
+                  whileHover={{ y: -4, borderColor: "rgba(255,255,255,0.15)" }}
                   transition={{ type: "spring", stiffness: 300, damping: 20 }}
                   className="flex gap-4 p-4 rounded-2xl border border-white/6 cursor-default"
                   style={{ background: "rgba(255,255,255,0.03)" }}
                 >
                   <div
                     className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 mt-0.5"
-                    style={{ background: `${color}18` }}
+                    style={{ background: "rgba(255,255,255,0.08)" }}
                   >
-                    <Icon size={17} color={color} strokeWidth={1.7} />
+                    <Icon size={17} className="text-white" strokeWidth={1.7} />
                   </div>
                   <div className="flex justify-center items-center">
                     <p className="text-white/90 text-sm font-medium">{title}</p>
@@ -171,9 +167,9 @@ export default function Getstarted() {
                   scale: 1.04,
                 }}
                 whileTap={{ scale: 0.97 }}
-                className="flex items-center gap-2.5 px-7 py-3.5 rounded-full text-white font-medium text-sm"
+                className="flex items-center gap-2.5 px-7 py-3.5 rounded-full text-black font-medium text-sm"
                 style={{
-                  background: "#0e7490",
+                  background: "#fff",
                   letterSpacing: "0.05em",
                 }}
               >

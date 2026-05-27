@@ -4,7 +4,7 @@ import React, { useRef } from "react";
 import { motion, useMotionValue, useMotionTemplate } from "framer-motion";
 import { CheckCircle2, ShieldCheck, Star } from "lucide-react";
 
-// --- Benefit Data Types ---
+//  Benefit Data Types
 const BENEFITS = [
   "7N/8D holidays every year",
   "Large premium rooms",
@@ -16,7 +16,7 @@ const BENEFITS = [
   "Easy exit, no questions asked",
 ];
 
-// --- Membership Cards Data Types ---
+// Membership Cards Data Types
 const MEMBERSHIPS = [
   {
     title: "EBONY",
@@ -145,7 +145,7 @@ export default function Membersec() {
   );
 }
 
-//SUB-COMPONENT: REUSABLE 3D MOUSE TILT CARD
+// SUB-COMPONENT: REUSABLE 3D MOUSE TILT CARD
 function TiltCard({ card }: { card: (typeof MEMBERSHIPS)[0] }) {
   const cardRef = useRef<HTMLDivElement>(null);
 

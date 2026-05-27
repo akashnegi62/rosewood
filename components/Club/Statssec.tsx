@@ -53,7 +53,7 @@ export default function Statssec() {
               <div className="absolute top-6 right-6">
                 {stat.isAccent ? (
                   // Solid Orange Circle Icon Frame Variant
-                  <div className="w-8 h-8 rounded-full bg-[#FF5A1F] flex items-center justify-center text-white shadow-sm shadow-orange-500/20 group-hover:scale-105 transition-transform duration-300">
+                  <div className="w-8 h-8 rounded-full bg-neutral-800 flex items-center justify-center text-white shadow-sm shadow-orange-500/20 group-hover:scale-105 transition-transform duration-300">
                     <ArrowUpRight className="w-4 h-4 stroke-[2.5]" />
                   </div>
                 ) : (
