@@ -1,36 +1,99 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🌹 Rosewood Worldwide Travels & Resorts
 
-## Getting Started
+Welcome to **Rosewood Worldwide Travels**, a luxury boutique hospitality and membership portal built on a modern stack. This platform offers seamless property exploration, custom curated experiences, membership enrolment via **Club Elevate**, and immersive travel stories.
 
-First, run the development server:
+---
 
+## ✨ Features
+
+- **🌐 Interactive Hero & Booking Bar**: Seamlessly search and explore 200+ global destinations with real-time feedback and booking inputs using [Home.tsx](./components/Home/Home.tsx).
+- **🏝️ Curated Resorts & Destinations**: A visually gorgeous catalog showcasing luxury villas, private beaches, and unique accommodations.
+- **✨ Experiences Portal**: Discover a tailored list of local adventures divided into:
+  - **National**: Experiences inside the country.
+  - **International**: Exotic travel routes and global exploration packages.
+- **💎 Club Elevate Membership**: Exclusive rewards, luxury concierge access, and private rates. Interactive enrollment form and program highlights.
+- **📰 Travel Blog**: Curated journals, design reviews, and guidebooks written by luxury travel writers.
+- **🔒 Secure Member Authentication**: User login and sign-up portals to access tailored membership profiles.
+
+---
+
+## 🛠️ Technology Stack
+
+- **Framework**: [Next.js 16](./package.json) (App Router configuration)
+- **Library**: [React 19](./package.json)
+- **Styling**: [Tailwind CSS v4](./package.json) & [PostCSS](./postcss.config.mjs)
+- **Animations**: [Framer Motion](./package.json)
+- **Icons**: [Lucide React](./package.json)
+- **Configuration**: [TypeScript](./tsconfig.json)
+
+---
+
+## 📁 Key Directories & Files
+
+### App Routing System
+- [app/layout.tsx](./app/layout.tsx) — Main layout featuring fonts, meta tags, and root wrapper.
+- [app/page.tsx](./app/page.tsx) — Landing Home page combining all key sections.
+- [app/resorts/page.tsx](./app/resorts/page.tsx) — Collection of top-tier resort properties.
+- [app/experiences/page.tsx](./app/experiences/page.tsx) — Gateway page for domestic and global travel experiences.
+- [app/clubelevate/page.tsx](./app/clubelevate/page.tsx) — Dedicated Club Elevate page detailing luxury membership benefits.
+- [app/blogs/page.tsx](./app/blogs/page.tsx) — The official Rosewood blog.
+- [app/join/page.tsx](./app/join/page.tsx) — Club Elevate member signup application form.
+- [app/login/page.tsx](./app/login/page.tsx) & [app/signup/page.tsx](./app/signup/page.tsx) — Authentication flow for members.
+
+### Core Layout Components
+- [components/Navbar.tsx](./components/Navbar.tsx) — A glassmorphic capsule navbar with spring-animated search toggle and interactive dropdowns.
+- [components/Heading.tsx](./components/Heading.tsx) — Reusable, fully responsive hero page header component.
+
+### Home Page Interactive Sections
+- [components/Home/Home.tsx](./components/Home/Home.tsx) — Hero element with a dynamic booking input form (Destination, Dates, Travelers).
+- [components/Home/Destinations.tsx](./components/Home/Destinations.tsx) — Beautiful destinations grid with hover animations.
+- [components/Home/Properties.tsx](./components/Home/Properties.tsx) — Featured hotels and resort estates.
+- [components/Home/Activities.tsx](./components/Home/Activities.tsx) — Guided resort experiences showcase.
+- [components/Home/Clientsec.tsx](./components/Home/Clientsec.tsx) — Interactive testimonials carousel.
+
+### Feature specific components
+- [components/Club/](./components/Club) — Modular sub-components for Club Elevate detail page, FAQ accordions, and signup layout forms.
+- [components/Resort/](./components/Resort) — Resort browsing section components.
+- [components/Experience/](./components/Experience) — Grid, layout, and descriptions of travel experiences.
+
+---
+
+## 🚀 Getting Started
+
+### 1. Clone the project and navigate to the directory
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+cd my-app
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 2. Install dependencies
+Ensure that you are running Node.js 18.x or above.
+```bash
+npm install
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 3. Run the development server
+```bash
+npm run dev
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Open [http://localhost:3000](http://localhost:3000) with your browser to view the live build.
 
-## Learn More
+### 4. Build for Production
+To optimize the bundle and produce static assets, run:
+```bash
+npm run build
+```
 
-To learn more about Next.js, take a look at the following resources:
+Then start the production server:
+```bash
+npm run start
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 🎨 Styling Guideline
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+This application strictly adopts modern UI principles:
+- **Tailwind CSS v4**: Built-in CSS variables, modern grids, flex layouts, and custom viewport sizing.
+- **Glassmorphism**: Elegant blur effects using `backdrop-blur` for navigational headers and cards.
+- **Micro-interactions**: Subtle hover states, animated dropdown menus, and spring layout transitions powered by Framer Motion.
