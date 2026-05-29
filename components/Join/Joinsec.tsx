@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import {
   motion,
   AnimatePresence,
@@ -141,7 +141,7 @@ function PlanCard({
         delay: index * 0.07,
         ease: [0.22, 1, 0.36, 1],
       }}
-      className="relative shrink-0 w-90 min-h-80 rounded-3xl border overflow-hidden transition-all duration-150 ease-out shadow-lg select-none"
+      className="relative shrink-0 w-full sm:w-90 min-h-80 rounded-3xl border overflow-hidden transition-all duration-150 ease-out shadow-lg select-none"
       style={{
         transform,
         background: tier.cardbg,
@@ -265,13 +265,35 @@ function PlanCard({
 
 function TierSection({ tier }: { tier: Tier }) {
   const [offset, setOffset] = useState(0);
-  const maxOffset = tier.plans.length - 3;
+  const [cardsToShow, setCardsToShow] = useState(3);
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-80px" });
 
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 640) {
+        setCardsToShow(1);
+      } else if (window.innerWidth < 1024) {
+        setCardsToShow(2);
+      } else {
+        setCardsToShow(3);
+      }
+    };
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  const maxOffset = Math.max(0, tier.plans.length - cardsToShow);
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setOffset((o) => Math.min(o, maxOffset));
+  }, [cardsToShow, maxOffset]);
+
   const prev = () => setOffset((o) => Math.max(0, o - 1));
   const next = () => setOffset((o) => Math.min(maxOffset, o + 1));
-  const visible = tier.plans.slice(offset, offset + 3);
+  const visible = tier.plans.slice(offset, offset + cardsToShow);
 
   return (
     <motion.section
@@ -279,7 +301,7 @@ function TierSection({ tier }: { tier: Tier }) {
       initial={{ opacity: 0, y: 40 }}
       animate={inView ? { opacity: 1, y: 0 } : {}}
       transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-      className="mb-20 w-fit mx-auto"
+      className="mb-20 w-full max-w-6xl mx-auto px-4 md:px-0"
     >
       {/* Section header */}
       <div className="flex items-end justify-between mb-6 w-full">
@@ -327,7 +349,7 @@ function TierSection({ tier }: { tier: Tier }) {
         <AnimatePresence mode="popLayout">
           <motion.div
             key={offset}
-            className="flex gap-4 w-fit"
+            className="flex gap-4 w-full md:w-fit justify-center md:justify-start"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
