@@ -45,28 +45,28 @@ export default function LoginPage() {
       </Link>
 
       {/* Left Column: Brand Marketing (TRAVEL Explore Horizons) */}
-      <div className="flex-1 flex flex-col justify-center px-8 py-16 md:py-8 md:px-20 text-white z-10 select-none">
+      <div className="flex-1 flex flex-col justify-center px-6 pt-28 pb-8 md:py-8 md:px-20 text-white z-10 select-none">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
           className="max-w-xl"
         >
-          <h1 className="text-2xl font-[Vera] font-bold tracking-widest text-white uppercase mb-8">
+          <h1 className="text-xl md:text-2xl font-[Vera] font-bold tracking-widest text-white uppercase mb-4 md:mb-8">
             ROSEWOOD TRAVELS
           </h1>
 
           {/* Heading */}
-          <h1 className="text-4xl md:text-6xl lg:text-7xl font-[Vera] tracking-wide uppercase leading-[1.05] mb-6">
+          <h1 className="text-3xl md:text-6xl lg:text-7xl font-[Vera] tracking-wide uppercase leading-[1.05] mb-4 md:mb-6">
             Explore <br />
             <span className="text-white">Horizons</span>
           </h1>
 
           {/* Subheading & Description */}
-          <p className="text-lg md:text-2xl font-medium text-white/90 mb-4 leading-snug">
+          <p className="text-base md:text-2xl font-medium text-white/90 mb-2 md:mb-4 leading-snug">
             Where Your Dream Destinations Become Reality.
           </p>
-          <p className="text-sm md:text-base font-medium text-white/70 max-w-md leading-relaxed">
+          <p className="text-xs md:text-base font-medium text-white/70 max-w-md leading-relaxed">
             Embark on a journey where every corner of the world is within your
             reach.
           </p>
@@ -74,12 +74,12 @@ export default function LoginPage() {
       </div>
 
       {/* Right Column: Glassmorphic Form Card */}
-      <div className="flex-1 flex items-center justify-center p-6 md:p-20 z-10">
+      <div className="flex-1 flex items-center justify-center px-4 py-8 md:p-20 z-10">
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.6, ease: "easeOut", delay: 0.2 }}
-          className="w-full max-w-md bg-white/10 backdrop-blur-xl rounded-[2.5rem] border border-white/20 p-8 md:p-12 shadow-2xl flex flex-col"
+          className="w-full max-w-md bg-white/10 backdrop-blur-xl rounded-3xl md:rounded-[2.5rem] border border-white/20 p-6 md:p-12 shadow-2xl flex flex-col"
         >
           <form onSubmit={handleSubmit} className="flex flex-col">
             {/* Email Field */}
