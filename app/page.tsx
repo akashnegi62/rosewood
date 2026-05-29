@@ -9,6 +9,7 @@ import Getstarted from "@/components/Home/Getstarted";
 import Activities from "@/components/Home/Activities";
 import Overview from "@/components/Home/Overview";
 import Blog from "@/components/Home/Blog";
+import Itinerary from "@/components/Home/Itinerary";
 
 function page() {
   return (
@@ -19,6 +20,7 @@ function page() {
       <Membersec />
       <Properties />
       <Getstarted />
+      <Itinerary />
       <Destinations />
       <Bannersec />
       <Clientsec />

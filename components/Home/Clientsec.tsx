@@ -5,7 +5,8 @@ import { motion } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import Image from "next/image";
 
-// Data
+// ─── Data ─────────────────────────────────────────────────────────────────────
+
 const testimonials = [
   {
     id: 1,
@@ -44,21 +45,11 @@ const testimonials = [
   },
 ];
 
-function QuoteIcon({
-  size = 36,
-  className,
-}: {
-  size?: number;
-  className?: string;
-}) {
+// ─── Quote Icon ───────────────────────────────────────────────────────────────
+
+function QuoteIcon({ size = 36, className }: { size?: number; className?: string }) {
   return (
-    <svg
-      width={size}
-      height={size}
-      viewBox="0 0 40 32"
-      fill="none"
-      className={className}
-    >
+    <svg width={size} height={size} viewBox="0 0 40 32" fill="none" className={className}>
       <path
         d="M0 32V19.556C0 8.741 6.222 2.37 18.667 0l1.777 3.556C14.37 5.037 11.11 8.296 10.222 13.333H17.78V32H0zm22.222 0V19.556C22.222 8.741 28.444 2.37 40.889 0l1.778 3.556c-6.074 1.481-9.334 4.74-10.222 9.777h7.555V32H22.222z"
         fill="currentColor"
@@ -67,195 +58,223 @@ function QuoteIcon({
   );
 }
 
+// ─── Breakpoint hook ──────────────────────────────────────────────────────────
+
+type Breakpoint = "mobile" | "tablet" | "desktop";
+
+function useBreakpoint(): Breakpoint {
+  const [bp, setBp] = useState<Breakpoint>("desktop");
+  useEffect(() => {
+    const update = () => {
+      const w = window.innerWidth;
+      if (w < 640) setBp("mobile");
+      else if (w < 1024) setBp("tablet");
+      else setBp("desktop");
+    };
+    update();
+    window.addEventListener("resize", update);
+    return () => window.removeEventListener("resize", update);
+  }, []);
+  return bp;
+}
+
+
+const LAYOUT = {
+  mobile:  { cardWidth: 300, cardHeight: 300, gapNear: 0,   gapFar: 0,   visibleSide: 0 },
+  tablet:  { cardWidth: 300, cardHeight: 310, gapNear: 220, gapFar: 420, visibleSide: 2 },
+  desktop: { cardWidth: 360, cardHeight: 320, gapNear: 280, gapFar: 520, visibleSide: 2 },
+};
+
+// ─── Main Component ───────────────────────────────────────────────────────────
+
 export default function Clientsec() {
   const [active, setActive] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
+  const [dragStartX, setDragStartX] = useState(0);
   const total = testimonials.length;
+  const bp = useBreakpoint();
+  const layout = LAYOUT[bp];
 
-  // Configuration for spacing
-  // Adjust these values to change how far apart the cards are
-  const GAP_NEAR = 280; // Distance from center to immediate neighbor
-  const GAP_FAR = 520; // Distance from center to far neighbor
+  const go = useCallback(
+    (dir: 1 | -1) => {
+      if (isAnimating) return;
+      setIsAnimating(true);
+      setActive((prev) => (prev + dir + total) % total);
+      setTimeout(() => setIsAnimating(false), 500);
+    },
+    [isAnimating, total]
+  );
 
-  const next = useCallback(() => {
-    if (isAnimating) return;
-    setIsAnimating(true);
-    setActive((prev) => (prev + 1) % total);
-    setTimeout(() => setIsAnimating(false), 500);
-  }, [isAnimating, total]);
+  const next = useCallback(() => go(1), [go]);
+  const prev = useCallback(() => go(-1), [go]);
 
-  const prev = useCallback(() => {
-    if (isAnimating) return;
-    setIsAnimating(true);
-    setActive((prev) => (prev - 1 + total) % total);
-    setTimeout(() => setIsAnimating(false), 500);
-  }, [isAnimating, total]);
-
+  // Keyboard nav
   useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
+    const onKey = (e: KeyboardEvent) => {
       if (e.key === "ArrowRight") next();
       if (e.key === "ArrowLeft") prev();
     };
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
   }, [next, prev]);
 
+  // Track height: enough to contain tallest card
+  const trackHeight = layout.cardHeight + 40;
+
   return (
-    <section className="w-full min-h-screen flex flex-col items-center justify-center py-20 px-4 overflow-hidden bg-white">
+    <section className="w-full min-h-screen flex flex-col items-center justify-center py-16 sm:py-20 px-4 overflow-hidden bg-white">
+
       {/* Header */}
       <motion.div
         initial={{ opacity: 0, y: 24 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.7 }}
-        className="text-center mb-14 z-10 relative font-[Vera]"
+        className="text-center mb-10 sm:mb-14 z-10 relative"
       >
-        <p className="text-lg tracking-[0.3em] uppercase mb-3 text-gray-400">
+        <p className="text-sm sm:text-lg tracking-[0.3em] uppercase mb-3 text-gray-400">
           Testimonials
         </p>
-        <h2 className="text-4xl md:text-8xl font-[Vera] tracking-tight text-black">
+        <h2 className="text-3xl sm:text-5xl md:text-7xl lg:text-8xl font-serif tracking-tight text-black">
           What Our Clients Say
         </h2>
       </motion.div>
 
-      {/* Carousel Container */}
-      <div className="relative w-full max-w-7xl h-112.5 flex items-center justify-center">
-        {/* Navigation Arrows */}
+      {/* Carousel */}
+      <div
+        className="relative w-full max-w-7xl flex items-center justify-center"
+        style={{ height: trackHeight }}
+      >
+        {/* Prev arrow — desktop only (absolute, beside cards) */}
         <button
           onClick={prev}
-          className="absolute left-4 md:left-10 z-50 w-12 h-12 rounded-full bg-black text-white shadow-lg flex items-center justify-center hover:scale-110 hover:bg-neutral-900 transition-all duration-200 cursor-pointer"
+          aria-label="Previous testimonial"
+          className="hidden lg:flex absolute left-10 z-50 w-12 h-12 rounded-full bg-black text-white shadow-lg items-center justify-center hover:scale-110 hover:bg-neutral-900 transition-all duration-200 cursor-pointer"
         >
-          <ChevronLeft size={20} className="text-white" strokeWidth={2} />
-        </button>
-        <button
-          onClick={next}
-          className="absolute right-4 md:right-10 z-50 w-12 h-12 rounded-full bg-black text-white shadow-lg flex items-center justify-center hover:scale-110 hover:bg-neutral-900 transition-all duration-200 cursor-pointer"
-        >
-          <ChevronRight size={20} className="text-white" strokeWidth={2} />
+          <ChevronLeft size={18} className="text-white" strokeWidth={2} />
         </button>
 
-        {/* Cards Track */}
-        <div className="relative w-full h-full flex items-center justify-center perspective-1000">
+        {/* Next arrow — desktop only (absolute, beside cards) */}
+        <button
+          onClick={next}
+          aria-label="Next testimonial"
+          className="hidden lg:flex absolute right-10 z-50 w-12 h-12 rounded-full bg-black text-white shadow-lg items-center justify-center hover:scale-110 hover:bg-neutral-900 transition-all duration-200 cursor-pointer"
+        >
+          <ChevronRight size={18} className="text-white" strokeWidth={2} />
+        </button>
+
+        {/* Cards track */}
+        <div
+          className="relative w-full h-full flex items-center justify-center"
+          // Touch/swipe support
+          onTouchStart={(e) => setDragStartX(e.touches[0].clientX)}
+          onTouchEnd={(e) => {
+            const delta = dragStartX - e.changedTouches[0].clientX;
+            // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+            if (Math.abs(delta) > 50) delta > 0 ? next() : prev();
+          }}
+        >
           {testimonials.map((item, index) => {
-            // Calculate circular distance
+            // Circular distance from active
             let distance = index - active;
             if (distance < -total / 2) distance += total;
             if (distance > total / 2) distance -= total;
 
             const isActive = distance === 0;
+            const absD = Math.abs(distance);
 
-            // --- CONFIGURATION FOR 5 CARDS VISIBLE ---
-            let scale = 0.7;
+            // ── Compute per-breakpoint transform values ──
+            let scale = 0.6;
             let xOffset = 0;
             let zIndex = 10;
             let opacity = 0;
-            let blur = 5;
+            let blur = 0;
 
-            if (isActive) {
-              // CENTER CARD
-              scale = 1;
-              xOffset = 0;
-              zIndex = 50;
-              opacity = 1;
-              blur = 0;
-            } else if (distance === 1 || distance === -1) {
-              // NEAR LEFT / RIGHT CARDS
-              scale = 0.85;
-              xOffset = distance * GAP_NEAR;
-              zIndex = 40;
-              opacity = 1;
-              blur = 0;
-            } else if (distance === 2 || distance === -2) {
-              // FAR LEFT / RIGHT CARDS
-              scale = 0.75;
-              xOffset = distance * GAP_FAR;
-              zIndex = 30;
-              opacity = 0.7; // Slightly faded
-              blur = 2;
+            if (bp === "mobile") {
+              // Only show the active card; others slide off-screen
+              if (isActive) { scale = 1; xOffset = 0; zIndex = 50; opacity = 1; }
+              else { scale = 0.85; xOffset = distance * 400; zIndex = 10; opacity = 0; }
+            } else if (bp === "tablet") {
+              // Same as desktop — center + 2 neighbours each side, fully visible
+              if (isActive) {
+                scale = 1;    xOffset = 0;                               zIndex = 50; opacity = 1;   blur = 0;
+              } else if (absD === 1) {
+                scale = 0.85; xOffset = distance * layout.gapNear;       zIndex = 40; opacity = 1;   blur = 0;
+              } else if (absD === 2) {
+                scale = 0.75; xOffset = distance * layout.gapFar;        zIndex = 30; opacity = 0.7; blur = 2;
+              } else {
+                scale = 0.6;  xOffset = distance * (layout.gapFar + 200); zIndex = 10; opacity = 0;
+              }
             } else {
-              // HIDDEN CARDS (Pushed way out)
-              scale = 0.6;
-              xOffset = distance * (GAP_FAR + 200);
-              zIndex = 10;
-              opacity = 0;
+              // Desktop: center + 2 on each side
+              if (isActive) {
+                scale = 1; xOffset = 0; zIndex = 50; opacity = 1; blur = 0;
+              } else if (absD === 1) {
+                scale = 0.85; xOffset = distance * layout.gapNear; zIndex = 40; opacity = 1; blur = 0;
+              } else if (absD === 2) {
+                scale = 0.75; xOffset = distance * layout.gapFar; zIndex = 30; opacity = 0.7; blur = 2;
+              } else {
+                scale = 0.6; xOffset = distance * (layout.gapFar + 200); zIndex = 10; opacity = 0;
+              }
             }
 
             return (
               <motion.div
                 key={item.id}
-                className="absolute top-1/2 left-1/2 flex flex-col justify-between bg-black rounded-2xl p-8 cursor-pointer select-none border border-neutral-800"
+                className="absolute flex flex-col justify-between bg-black rounded-2xl p-6 sm:p-8 cursor-pointer select-none border border-neutral-800"
                 style={{
-                  width: "360px",
-                  minHeight: "320px",
-                  // Center the pivot point
-                  marginLeft: "-180px",
-                  marginTop: "-160px",
+                  width: layout.cardWidth,
+                  minHeight: layout.cardHeight,
+                  marginLeft: -(layout.cardWidth / 2),
+                  marginTop: -(layout.cardHeight / 2),
+                  top: "50%",
+                  left: "50%",
                   zIndex,
                 }}
-                animate={{
-                  x: xOffset,
-                  scale,
-                  opacity,
-                  filter: `blur(${blur}px)`,
-                }}
-                transition={{
-                  type: "spring",
-                  stiffness: 120,
-                  damping: 20,
-                  mass: 1.2,
-                }}
+                animate={{ x: xOffset, scale, opacity, filter: `blur(${blur}px)` }}
+                transition={{ type: "spring", stiffness: 120, damping: 20, mass: 1.2 }}
                 onClick={() => {
-                  if (Math.abs(distance) === 1) {
-                    if (distance === 1) next();
-                    else prev();
-                  } else if (Math.abs(distance) === 2) {
-                    // Optional: Jump two steps if clicking far cards?
-                    // Usually better to just step one by one for smoothness
-                    if (distance === 2) {
-                      next();
-                      setTimeout(next, 100);
-                    } else {
-                      prev();
-                      setTimeout(prev, 100);
-                    }
+                  // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+                  if (!isActive && absD === 1) distance === 1 ? next() : prev();
+                  if (!isActive && absD === 2) {
+                    if (distance === 2) { next(); setTimeout(next, 120); }
+                    else { prev(); setTimeout(prev, 120); }
                   }
                 }}
               >
                 <div>
                   <QuoteIcon
-                    size={isActive ? 40 : 30}
+                    size={isActive ? 36 : 26}
                     className={isActive ? "text-white" : "text-neutral-700"}
                   />
                   <p
-                    className={`mt-5 leading-relaxed ${isActive ? "text-white text-[15px]" : "text-neutral-400 text-[13px]"}`}
-                    style={{ fontFamily: "sans-serif" }}
+                    className={`mt-4 leading-relaxed ${
+                      isActive ? "text-white text-sm sm:text-[15px]" : "text-neutral-400 text-xs sm:text-[13px]"
+                    }`}
                   >
                     &quot;{item.text}&quot;
                   </p>
                 </div>
 
                 <div
-                  className={`flex items-center gap-3 mt-6 pt-5 border-t ${isActive ? "border-neutral-800" : "border-neutral-900"}`}
+                  className={`flex items-center gap-3 mt-5 pt-5 border-t ${
+                    isActive ? "border-neutral-800" : "border-neutral-900"
+                  }`}
                 >
                   <Image
-                    width={100}
-                    height={100}
+                    width={48}
+                    height={48}
                     src={item.avatar}
                     alt={item.name}
-                    className={`rounded-full object-cover ring-2 ring-offset-2 ring-offset-black ${isActive ? "ring-white w-12 h-12" : "ring-transparent w-10 h-10"}`}
+                    className={`rounded-full object-cover ring-2 ring-offset-2 ring-offset-black shrink-0 ${
+                      isActive ? "ring-white w-11 h-11 sm:w-12 sm:h-12" : "ring-transparent w-9 h-9 sm:w-10 sm:h-10"
+                    }`}
                   />
                   <div>
-                    <p
-                      className={`text-white ${isActive ? "font-bold text-base" : "font-semibold text-sm"}`}
-                    >
+                    <p className={`text-white ${isActive ? "font-bold text-sm sm:text-base" : "font-semibold text-xs sm:text-sm"}`}>
                       {item.name}
                     </p>
-                    <p
-                      className="text-neutral-400 text-xs mt-0.5"
-                      style={{ fontFamily: "sans-serif" }}
-                    >
-                      {item.location}
-                    </p>
+                    <p className="text-neutral-400 text-xs mt-0.5">{item.location}</p>
                   </div>
                 </div>
               </motion.div>
@@ -264,13 +283,32 @@ export default function Clientsec() {
         </div>
       </div>
 
+      {/* Mobile & Tablet nav buttons — shown below cards */}
+      <div className="flex lg:hidden items-center gap-4 mt-6">
+        <button
+          onClick={prev}
+          aria-label="Previous testimonial"
+          className="w-11 h-11 rounded-full bg-black text-white shadow-lg flex items-center justify-center hover:bg-neutral-800 active:scale-95 transition-all duration-200"
+        >
+          <ChevronLeft size={18} className="text-white" strokeWidth={2} />
+        </button>
+        <button
+          onClick={next}
+          aria-label="Next testimonial"
+          className="w-11 h-11 rounded-full bg-black text-white shadow-lg flex items-center justify-center hover:bg-neutral-800 active:scale-95 transition-all duration-200"
+        >
+          <ChevronRight size={18} className="text-white" strokeWidth={2} />
+        </button>
+      </div>
+
       {/* Dot indicators */}
-      <div className="flex items-center gap-2 mt-8">
+      <div className="flex items-center gap-2 mt-4 sm:mt-5">
         {testimonials.map((_, i) => (
           <button
             key={i}
             onClick={() => !isAnimating && setActive(i)}
-            className="focus:outline-none group"
+            aria-label={`Go to testimonial ${i + 1}`}
+            className="focus:outline-none"
           >
             <motion.div
               animate={{

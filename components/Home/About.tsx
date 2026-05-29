@@ -17,7 +17,7 @@ export default function About() {
           className="lg:col-span-5 flex flex-col justify-center text-left z-10"
         >
           {/* Micro-Header Tag */}
-          <span className="text-[10px] md:text-sm font-[Vera] tracking-[0.3em] text-neutral-400 uppercase mb-6 block">
+          <span className="text-[15px] md:text-sm font-[Vera] tracking-[0.3em] text-neutral-400 uppercase mb-6 block">
             About Rosewood Worldwide Travel
           </span>
 

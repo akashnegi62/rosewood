@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 
@@ -43,41 +43,67 @@ const destinations = [
   },
 ];
 
-const VISIBLE = 4; // cards visible at once
+// Gap between cards in px — keep in sync with the gap-3 class (12px)
+const GAP = 12;
+
+function useVisibleCount() {
+  const [count, setCount] = useState(4);
+  useEffect(() => {
+    const update = () => {
+      const w = window.innerWidth;
+      if (w < 640) setCount(1);
+      else if (w < 1024) setCount(2);
+      else if (w < 1280) setCount(3);
+      else setCount(4);
+    };
+    update();
+    window.addEventListener("resize", update);
+    return () => window.removeEventListener("resize", update);
+  }, []);
+  return count;
+}
 
 export default function Properties() {
-  const [offset, setOffset] = useState(0); // how many cards scrolled
-  const maxOffset = destinations.length - VISIBLE;
+  const [offset, setOffset] = useState(0);
+  const visibleCount = useVisibleCount();
+  const maxOffset = Math.max(0, destinations.length - visibleCount);
+
+  // Clamp offset when screen resizes
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setOffset((o) => Math.min(o, maxOffset));
+  }, [maxOffset]);
 
   const prev = () => setOffset((o) => Math.max(0, o - 1));
   const next = () => setOffset((o) => Math.min(maxOffset, o + 1));
 
   return (
-    <section className="w-full min-h-screen bg-white flex items-center py-24">
+    <section className="w-full min-h-screen bg-white flex items-center py-16 md:py-24">
       <div className="w-full max-w-7xl mx-auto px-6 flex flex-col items-center">
-        {/* 1. Header Block */}
-        <div className="text-center flex flex-col items-center mb-16">
-          <motion.div className="inline-flex items-center gap-2 bg-neutral-900 border border-neutral-800/80 backdrop-blur-md rounded-full px-4 py-1.5 text-xs text-white font-medium tracking-wider uppercase mb-6">
+        {/* Header */}
+        <div className="text-center flex flex-col items-center mb-10 md:mb-16">
+          <div className="inline-flex items-center gap-2 bg-neutral-900 border border-neutral-800/80 rounded-full px-4 py-1.5 text-xs text-white font-medium tracking-wider uppercase mb-6">
             <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
             Explore 200+ Resorts
-          </motion.div>
-          <h2 className="text-4xl md:text-8xl font-[Vera] tracking-tight text-black mb-4">
+          </div>
+          <h2 className="text-4xl md:text-8xl font-serif tracking-tight text-black mb-4">
             Popular Resorts
           </h2>
           <p className="text-neutral-800 font-light text-sm md:text-lg max-w-xl leading-relaxed">
-            From oceanfront luxury villas to secluded mountain retreats, find your perfect resort getaway.
+            From oceanfront luxury villas to secluded mountain retreats, find
+            your perfect resort getaway.
           </p>
         </div>
 
-        {/* Navigation & Cards Wrapper */}
+        {/* Navigation + Cards */}
         <div className="w-full flex flex-col">
-          {/* Nav arrows — horizontal, rounded-full, positioned right */}
+          {/* Arrows */}
           <div className="flex justify-end gap-3 mb-6">
             <motion.button
               onClick={prev}
               disabled={offset === 0}
               whileTap={offset > 0 ? { scale: 0.94 } : {}}
-              className="w-12 h-12 rounded-full bg-black flex items-center justify-center hover:bg-neutral-800 transition-colors disabled:opacity-30"
+              className="w-12 h-12 rounded-full bg-black flex items-center justify-center hover:bg-neutral-800 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
             >
               <ArrowLeft size={18} strokeWidth={1.8} className="text-white" />
             </motion.button>
@@ -85,24 +111,76 @@ export default function Properties() {
               onClick={next}
               disabled={offset >= maxOffset}
               whileTap={offset < maxOffset ? { scale: 0.94 } : {}}
-              className="w-12 h-12 rounded-full bg-black flex items-center justify-center hover:bg-neutral-800 transition-colors disabled:opacity-30"
+              className="w-12 h-12 rounded-full bg-black flex items-center justify-center hover:bg-neutral-800 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
             >
               <ArrowRight size={18} strokeWidth={1.8} className="text-white" />
             </motion.button>
           </div>
 
-          {/* Cards strip */}
+          {/* Track */}
+          {/*
+            KEY FIX:
+            - Each card is sized as: (100% - gaps) / visibleCount
+              → we use CSS calc so cards always fill the viewport exactly.
+            - The strip translates by: offset * (cardWidth + gap)
+              → expressed in CSS calc so it stays pixel-perfect at every breakpoint.
+            - We use a CSS custom property --vc (visible count) to share the value
+              cleanly between card sizing and strip translation.
+          */}
           <div className="overflow-hidden w-full">
             <motion.div
-              className="flex gap-3"
-              animate={{ x: `calc(-${offset} * (25% + 0.75rem))` }}
-              transition={{ type: "spring", stiffness: 260, damping: 32 }}
-              style={{ width: `${(destinations.length / VISIBLE) * 100}%` }}
+              className="flex cursor-grab active:cursor-grabbing"
+              style={{
+                gap: GAP,
+                // Translate left by exactly `offset` card-widths (including gaps)
+                // cardWidth = (100% - gaps_between_visible) / visibleCount
+                // translation = offset * (cardWidth + gap)
+                //             = offset * ((100% - (visibleCount-1)*gap) / visibleCount + gap)
+              }}
+              drag="x"
+              dragConstraints={{ left: 0, right: 0 }}
+              dragElastic={0.15}
+              onDragEnd={(_, info) => {
+                if (info.offset.x < -50) next();
+                else if (info.offset.x > 50) prev();
+              }}
+              animate={{
+                // Each card occupies: (containerWidth - (visibleCount-1)*GAP) / visibleCount
+                // We shift by offset multiples of (cardWidth + GAP)
+                x: `calc(${offset} * -1 * ((100% - ${(visibleCount - 1) * GAP}px) / ${visibleCount} + ${GAP}px))`,
+              }}
+              transition={{
+                type: "spring",
+                stiffness: 280,
+                damping: 30,
+                mass: 0.9,
+              }}
             >
               {destinations.map((dest, i) => (
-                <DestCard key={dest.id} dest={dest} index={i} />
+                <DestCard
+                  key={dest.id}
+                  dest={dest}
+                  index={i}
+                  visibleCount={visibleCount}
+                />
               ))}
             </motion.div>
+          </div>
+
+          {/* Dot indicators */}
+          <div className="flex justify-center gap-2 mt-8">
+            {Array.from({ length: maxOffset + 1 }).map((_, i) => (
+              <button
+                key={i}
+                onClick={() => setOffset(i)}
+                className={`transition-all duration-300 rounded-full ${
+                  offset === i
+                    ? "w-6 h-2 bg-black"
+                    : "w-2 h-2 bg-neutral-300 hover:bg-neutral-400"
+                }`}
+                aria-label={`Go to slide ${i + 1}`}
+              />
+            ))}
           </div>
         </div>
       </div>
@@ -113,9 +191,11 @@ export default function Properties() {
 function DestCard({
   dest,
   index,
+  visibleCount,
 }: {
   dest: (typeof destinations)[0];
   index: number;
+  visibleCount: number;
 }) {
   const [hovered, setHovered] = useState(false);
 
@@ -123,21 +203,22 @@ function DestCard({
     <motion.div
       className="relative shrink-0 overflow-hidden rounded-sm cursor-pointer"
       style={{
-        width: `calc(${((100 / destinations.length) * VISIBLE) / VISIBLE}% )`,
-        flex: `0 0 calc(${100 / destinations.length}%)`,
+        // Each card fills exactly 1/visibleCount of the container, accounting for gaps
+        width: `calc((100% - ${(visibleCount - 1) * GAP}px) / ${visibleCount})`,
+        flex: `0 0 calc((100% - ${(visibleCount - 1) * GAP}px) / ${visibleCount})`,
         aspectRatio: "3 / 4.2",
       }}
       initial={{ opacity: 0, y: 40 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{
-        delay: index * 0.08,
-        duration: 0.6,
+        delay: index * 0.07,
+        duration: 0.55,
         ease: [0.16, 1, 0.3, 1],
       }}
       onHoverStart={() => setHovered(true)}
       onHoverEnd={() => setHovered(false)}
     >
-      {/* Image with zoom on hover */}
+      {/* Image */}
       <motion.img
         src={dest.image}
         alt={dest.name}
@@ -146,7 +227,7 @@ function DestCard({
         transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
       />
 
-      {/* Bottom gradient */}
+      {/* Gradient */}
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
@@ -159,11 +240,7 @@ function DestCard({
       <div className="absolute bottom-5 left-5 z-10">
         <p
           className="text-[10px] tracking-[0.22em] uppercase mb-1"
-          style={{
-            color: "#c9a84c",
-            fontFamily: "sans-serif",
-            fontWeight: 600,
-          }}
+          style={{ color: "#c9a84c", fontWeight: 600 }}
         >
           Destination
         </p>
@@ -183,7 +260,7 @@ function DestCard({
         </motion.p>
       </div>
 
-      {/* Hover shine sweep */}
+      {/* Hover shine */}
       <AnimatePresence>
         {hovered && (
           <motion.div

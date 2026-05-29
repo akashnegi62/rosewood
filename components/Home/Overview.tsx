@@ -52,7 +52,7 @@ export default function Overview() {
               }`}
             >
               {/* Micro-Header Tag */}
-              <span className="text-[10px] md:text-lg font-[Vans] tracking-[0.3em] text-neutral-800 uppercase mb-5 block">
+              <span className="text-[15px] md:text-lg font-[Vans] tracking-[0.3em] text-neutral-800 uppercase mb-5 block">
                 {section.tag}
               </span>
 
