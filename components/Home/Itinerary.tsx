@@ -171,7 +171,8 @@ function ItineraryCard({ item, onPlay }: CardProps) {
             <span>{item.duration}</span>
           </div>
 
-          <span
+          <Link
+            href={`/itinerary/${item.id}`}
             className="inline-flex items-center gap-1 text-xs font-semibold text-gray-700
                           border border-gray-200 px-4 py-1.5 rounded-full
                           group-hover:bg-black group-hover:text-white group-hover:border-black
@@ -179,7 +180,7 @@ function ItineraryCard({ item, onPlay }: CardProps) {
           >
             Explore
             <ArrowRight className="w-3 h-3" />
-          </span>
+          </Link>
         </div>
       </div>
     </motion.article>
