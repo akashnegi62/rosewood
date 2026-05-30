@@ -15,13 +15,13 @@ function page() {
   return (
     <>
       <Home />
-      <Overview />
       <About />
+      <Overview />
       <Membersec />
       <Properties />
+      <Destinations />
       <Getstarted />
       <Itinerary />
-      <Destinations />
       <Bannersec />
       <Clientsec />
       <Activities />

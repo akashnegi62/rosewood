@@ -1,8 +1,9 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import React, { useState } from "react";
 import Image from "next/image";
-import { motion, AnimatePresence, Variants, LayoutGroup } from "framer-motion";
+import { motion, AnimatePresence, Variants } from "framer-motion";
 import {
   MapPin,
   Clock,
@@ -16,10 +17,8 @@ import {
 import Link from "next/link";
 import { itineraryData, ItineraryItem } from "./itineraryData";
 
-// ─── Animation Variants ───────────────────────────────────────────────────────
+// ─── Animation Variants 
 
-// Card enter: fade + rise + slight scale up from below
-// Card exit:  fade + shrink + fall back — feels like it "slots out"
 const cardVariants: Variants = {
   hidden: {
     opacity: 0,
@@ -73,7 +72,7 @@ const modalVariants: Variants = {
   },
 };
 
-// ─── Card Component ───────────────────────────────────────────────────────────
+// ─── Card Component
 
 interface CardProps {
   item: ItineraryItem;
@@ -159,7 +158,7 @@ function ItineraryCard({ item, onPlay }: CardProps) {
   );
 }
 
-// ─── Video Modal ──────────────────────────────────────────────────────────────
+// ─── Video Modal
 
 interface VideoModalProps {
   videoId: string | null;
@@ -213,61 +212,7 @@ function VideoModal({ videoId, onClose }: VideoModalProps) {
   );
 }
 
-// ─── Filter Pill Button ───────────────────────────────────────────────────────
-
-interface PillProps {
-  active: boolean;
-  onClick: () => void;
-  children: React.ReactNode;
-}
-
-function Pill({ active, onClick, children }: PillProps) {
-  return (
-    <button
-      onClick={onClick}
-      className={`relative px-4 py-2 rounded-xl text-xs font-bold tracking-wider uppercase transition-colors duration-200 ${
-        active ? "text-neutral-950" : "text-neutral-500 hover:text-neutral-800"
-      }`}
-    >
-      {active && (
-        <motion.span
-          layoutId="pill-bg"
-          className="absolute inset-0 bg-white rounded-xl shadow-sm"
-          transition={{ type: "spring", stiffness: 380, damping: 30 }}
-        />
-      )}
-      <span className="relative z-10">{children}</span>
-    </button>
-  );
-}
-
-interface DurationPillProps {
-  active: boolean;
-  onClick: () => void;
-  children: React.ReactNode;
-}
-
-function DurationPill({ active, onClick, children }: DurationPillProps) {
-  return (
-    <button
-      onClick={onClick}
-      className={`relative px-4 py-2 rounded-xl text-xs font-bold tracking-wider uppercase transition-colors duration-200 ${
-        active ? "text-neutral-950" : "text-neutral-500 hover:text-neutral-800"
-      }`}
-    >
-      {active && (
-        <motion.span
-          layoutId="duration-pill-bg"
-          className="absolute inset-0 bg-white rounded-xl shadow-sm"
-          transition={{ type: "spring", stiffness: 380, damping: 30 }}
-        />
-      )}
-      <span className="relative z-10">{children}</span>
-    </button>
-  );
-}
-
-// ─── Main Page ────────────────────────────────────────────────────────────────
+// ─── Main Page
 
 export default function ItineraryPage() {
   const [activeVideoId, setActiveVideoId] = useState<string | null>(null);
@@ -309,119 +254,97 @@ export default function ItineraryPage() {
   };
 
   return (
-    <main className="min-h-screen bg-neutral-50 text-neutral-900 pb-24">
+    <main className="min-h-screen bg-white text-neutral-900 pb-24">
       <section className="max-w-7xl mx-auto px-6 mt-12">
-        {/* ── Filter Panel ── */}
-        <div className="bg-white border border-neutral-200 rounded-3xl p-6 md:p-8 shadow-xl shadow-neutral-100/50 mb-12">
-          <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
-            {/* Search */}
-            <div className="relative flex-1">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-neutral-400 pointer-events-none" />
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search by destination, country, keyword..."
-                className="w-full pl-12 pr-10 py-3.5 bg-neutral-50 border border-neutral-200 rounded-2xl
-                           text-sm font-medium text-neutral-800 placeholder-neutral-400 focus:outline-none
-                           focus:ring-2 focus:ring-black/10 focus:border-neutral-900 transition-all"
-              />
-              {searchQuery && (
-                <button
-                  onClick={() => setSearchQuery("")}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-neutral-600 transition-colors"
-                >
-                  <X className="w-4 h-4" />
-                </button>
-              )}
-            </div>
+        {/* 1. FILTERING CATEGORY NAVIGATION ROW - REGIONS */}
+        <div className="flex flex-wrap gap-3 items-center justify-center mb-6">
+          {[
+            { label: "ALL REGIONS", value: "all" },
+            { label: "INDIA", value: "india" },
+            { label: "INTERNATIONAL", value: "international" },
+          ].map((region) => {
+            const isSelected = selectedRegion === region.value;
+            return (
+              <button
+                key={region.value}
+                onClick={() => setSelectedRegion(region.value as any)}
+                className={`text-xs font-medium tracking-widest uppercase px-5 py-2.5 rounded-full border transition-all duration-300 active:scale-95 cursor-pointer
+                  ${
+                    isSelected
+                      ? "bg-black text-white border-black shadow-xs"
+                      : "bg-transparent text-neutral-600 border-dashed border-neutral-400 hover:text-black hover:border-black"
+                  }`}
+              >
+                {region.label}
+              </button>
+            );
+          })}
+        </div>
 
-            <div className="flex flex-wrap items-center gap-3">
-              {/* Region pills — shared layoutId for sliding bg */}
-              <LayoutGroup id="region">
-                <div className="flex items-center gap-1 bg-neutral-100 p-1.5 rounded-2xl border border-neutral-200/50">
-                  <Pill
-                    active={selectedRegion === "all"}
-                    onClick={() => setSelectedRegion("all")}
-                  >
-                    All
-                  </Pill>
-                  <Pill
-                    active={selectedRegion === "india"}
-                    onClick={() => setSelectedRegion("india")}
-                  >
-                    India
-                  </Pill>
-                  <Pill
-                    active={selectedRegion === "international"}
-                    onClick={() => setSelectedRegion("international")}
-                  >
-                    International
-                  </Pill>
-                </div>
-              </LayoutGroup>
+        {/* 2. FILTERING CATEGORY NAVIGATION ROW - DURATIONS */}
+        <div className="flex flex-wrap gap-3 items-center justify-center mb-12 pb-8">
+          {[
+            { label: "ANY DURATION", value: "all" },
+            { label: "3-4 NIGHTS", value: "short" },
+            { label: "5-6 NIGHTS", value: "long" },
+          ].map((dur) => {
+            const isSelected = selectedDuration === dur.value;
+            return (
+              <button
+                key={dur.value}
+                onClick={() => setSelectedDuration(dur.value as any)}
+                className={`text-xs font-medium tracking-widest uppercase px-5 py-2.5 rounded-full border transition-all duration-300 active:scale-95 cursor-pointer
+                  ${
+                    isSelected
+                      ? "bg-black text-white border-black shadow-xs"
+                      : "bg-transparent text-neutral-600 border-dashed border-neutral-400 hover:text-black hover:border-black"
+                  }`}
+              >
+                {dur.label}
+              </button>
+            );
+          })}
+        </div>
 
-              {/* Duration pills */}
-              <LayoutGroup id="duration">
-                <div className="flex items-center gap-1 bg-neutral-100 p-1.5 rounded-2xl border border-neutral-200/50">
-                  <DurationPill
-                    active={selectedDuration === "all"}
-                    onClick={() => setSelectedDuration("all")}
-                  >
-                    Any
-                  </DurationPill>
-                  <DurationPill
-                    active={selectedDuration === "short"}
-                    onClick={() => setSelectedDuration("short")}
-                  >
-                    3–4 Nights
-                  </DurationPill>
-                  <DurationPill
-                    active={selectedDuration === "long"}
-                    onClick={() => setSelectedDuration("long")}
-                  >
-                    5–6 Nights
-                  </DurationPill>
-                </div>
-              </LayoutGroup>
-
-              {/* Reset */}
-              <AnimatePresence>
-                {hasActiveFilters && (
-                  <motion.button
-                    initial={{ opacity: 0, scale: 0.85 }}
-                    animate={{
-                      opacity: 1,
-                      scale: 1,
-                      transition: {
-                        type: "spring",
-                        stiffness: 300,
-                        damping: 22,
-                      },
-                    }}
-                    exit={{
-                      opacity: 0,
-                      scale: 0.85,
-                      transition: { duration: 0.15 },
-                    }}
-                    onClick={handleReset}
-                    className="flex items-center gap-1.5 px-4 py-3 border border-neutral-200 hover:bg-neutral-50
-                               hover:border-neutral-300 rounded-2xl text-xs font-bold tracking-wider uppercase
-                               text-neutral-700 transition-colors"
-                  >
-                    <RotateCcw className="w-3.5 h-3.5" />
-                    Reset
-                  </motion.button>
-                )}
-              </AnimatePresence>
-            </div>
+        {/* 3. SEARCH BAR */}
+        <div className="max-w-md mx-auto mb-10 relative">
+          <div className="relative flex items-center bg-white border border-neutral-200 focus-within:border-neutral-900 rounded-full px-5 py-3 transition-all duration-300 shadow-xs">
+            <Search className="w-4 h-4 text-neutral-400 mr-3 shrink-0" />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search itineraries..."
+              className="bg-transparent text-sm text-neutral-950 placeholder-neutral-400 focus:outline-none w-full font-medium"
+            />
+            {searchQuery && (
+              <button
+                onClick={() => setSearchQuery("")}
+                className="p-1 hover:bg-neutral-200 rounded-full transition-colors shrink-0 cursor-pointer"
+                aria-label="Clear search"
+              >
+                <X className="w-3.5 h-3.5 text-neutral-500" />
+              </button>
+            )}
           </div>
+        </div>
 
-          {/* Result count */}
-          <div className="mt-4 text-xs text-neutral-400 font-medium">
-            Showing {filteredItineraries.length} of {itineraryData.length}{" "}
-            itineraries
+        {/* 4. RESET BUTTON */}
+        {hasActiveFilters && (
+          <div className="flex justify-center mb-8">
+            <button
+              onClick={handleReset}
+              className="inline-flex items-center gap-1.5 px-5 py-2.5 bg-neutral-900 hover:bg-neutral-800 text-white rounded-full text-xs font-bold tracking-widest uppercase transition-all duration-300 active:scale-95 shadow-md cursor-pointer"
+            >
+              <RotateCcw className="w-3.5 h-3.5" />
+              Reset Filters
+            </button>
           </div>
+        )}
+
+        {/* 5. RESULT COUNT */}
+        <div className="text-center text-xs text-neutral-400 font-medium mb-8">
+          Showing {filteredItineraries.length} of {itineraryData.length} itineraries
         </div>
 
         {/* ── Cards Grid ── */}

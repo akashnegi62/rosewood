@@ -1,7 +1,6 @@
 "use client";
 
 import { useRef } from "react";
-import Image from "next/image";
 import { motion, useInView } from "framer-motion";
 import {
   CalendarCheck,
@@ -57,137 +56,84 @@ function FadeUp({
 
 export default function Getstarted() {
   return (
-    <section className="relative min-h-screen w-full bg-black overflow-hidden">
-      <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-12 py-24 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-        {/* ── LEFT — image composition ── */}
-        <div
-          className="relative flex items-center justify-center"
-          style={{ minHeight: 520 }}
-        >
-          {/* Large image */}
-          <FadeUp delay={0.1}>
-            <div
-              className="relative rounded-lg overflow-hidden"
-              style={{
-                width: "min(380px, 80vw)",
-                aspectRatio: "3/4",
-                boxShadow: "0 32px 80px rgba(0,0,0,0.55)",
-              }}
-            >
-              <Image
-                src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&q=85"
-                alt="Mountain travel"
-                fill
-                sizes="(max-w-768px) 80vw, 380px"
-                className="object-cover"
-              />
-              {/* Inner gradient */}
-              <div
-                className="absolute inset-0"
-                style={{
-                  background:
-                    "linear-gradient(to top, rgba(12,17,23,0.6) 0%, transparent 55%)",
-                }}
-              />
-            </div>
-          </FadeUp>
-        </div>
+    <section className="relative min-h-[80vh] w-full bg-black overflow-hidden flex items-center justify-center py-24">
+      <div className="relative z-10 max-w-4xl mx-auto px-6 md:px-12 flex flex-col items-center text-center">
+        {/* Headline */}
+        <FadeUp delay={0.15}>
+          <h2
+            className="text-white leading-[1.15] mb-6 font-[Vera] text-center"
+            style={{
+              fontSize: "clamp(2.5rem, 5vw, 3.8rem)",
+              letterSpacing: "-0.02em",
+            }}
+          >
+            Get Started with{" "}
+            <span className="bg-linear-to-r from-cyan-400 via-white to-cyan-500 bg-clip-text text-transparent italic">
+              Rosewood
+            </span>
+            <br />
+            Worldwide Travel.
+          </h2>
+        </FadeUp>
 
-        {/* ── RIGHT — content ── */}
-        <div className="flex flex-col">
-          {/* Headline */}
-          <FadeUp delay={0.25}>
-            <h2
-              className="text-white leading-[1.1] mb-3 font-[Vera]"
-              style={{
-                fontSize: "clamp(2rem, 4vw, 3.2rem)",
-                letterSpacing: "-0.02em",
-              }}
-            >
-              Get Started with{" "}
-              <span
-                className="italic"
-                style={{
-                  background: "linear-gradient(90deg, #e8896a, #e8c46a)",
-                  WebkitBackgroundClip: "text",
-                  WebkitTextFillColor: "transparent",
-                }}
-              >
-                Rosewood
-              </span>
-              <br />
-              Worldwide Travel.
-            </h2>
-          </FadeUp>
+        {/* Body */}
+        <FadeUp delay={0.25}>
+          <p
+            className="text-white/50 leading-relaxed mb-12 mx-auto text-center"
+            style={{
+              fontSize: "1rem",
+              maxWidth: 580,
+            }}
+          >
+            For people who want to explore and try new experiences of life by
+            travelling — our company makes your journey more memorable,
+            exciting, and deeply personal.
+          </p>
+        </FadeUp>
 
-          {/* Body */}
-          <FadeUp delay={0.35}>
-            <p
-              className="text-white/50 leading-relaxed mb-10"
-              style={{
-                fontSize: "0.95rem",
-                maxWidth: 480,
-              }}
-            >
-              For people who want to explore and try new experiences of life by
-              travelling — our company makes your journey more memorable,
-              exciting, and deeply personal.
-            </p>
-          </FadeUp>
-
-          {/* Feature list */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-10">
-            {features.map(({ num, icon: Icon, title }, i) => (
-              <FadeUp key={num} delay={0.4 + i * 0.1}>
-                <motion.div
-                  whileHover={{ y: -4, borderColor: "rgba(255,255,255,0.15)" }}
-                  transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                  className="flex gap-4 p-4 rounded-2xl border border-white/6 cursor-default"
-                  style={{ background: "rgba(255,255,255,0.03)" }}
+        {/* Feature list */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12 mb-16 w-full max-w-3xl mx-auto">
+          {features.map(({ num, icon: Icon, title }, i) => (
+            <FadeUp key={num} delay={0.35 + i * 0.1}>
+              <div className="flex flex-col items-center gap-4 text-center cursor-default group">
+                <div
+                  className="w-14 h-14 rounded-full flex items-center justify-center shrink-0 transition-transform duration-300 group-hover:scale-110"
+                  style={{
+                    background: "rgba(255,255,255,0.06)",
+                    border: "1px solid rgba(255,255,255,0.08)",
+                  }}
                 >
-                  <div
-                    className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 mt-0.5"
-                    style={{ background: "rgba(255,255,255,0.08)" }}
-                  >
-                    <Icon size={17} className="text-white" strokeWidth={1.7} />
-                  </div>
-                  <div className="flex justify-center items-center">
-                    <p className="text-white/90 text-sm font-medium">{title}</p>
-                  </div>
-                </motion.div>
-              </FadeUp>
-            ))}
-          </div>
-
-          {/* CTA row */}
-          <FadeUp delay={0.85}>
-            <div className="flex items-center gap-4 flex-wrap">
-              <motion.button
-                whileHover={{
-                  scale: 1.04,
-                }}
-                whileTap={{ scale: 0.97 }}
-                className="flex items-center gap-2.5 px-7 py-3.5 rounded-full text-black font-medium text-sm"
-                style={{
-                  background: "#fff",
-                  letterSpacing: "0.05em",
-                }}
-              >
-                Start now
-                <ArrowRight size={15} strokeWidth={2} />
-              </motion.button>
-
-              <motion.button
-                whileHover={{ x: 4 }}
-                transition={{ type: "spring", stiffness: 400 }}
-                className="flex items-center gap-2 text-white/40 text-sm hover:text-white/70 transition-colors"
-              >
-                <span>View destinations</span>
-                <ArrowRight size={13} strokeWidth={1.5} />
-              </motion.button>
-            </div>
-          </FadeUp>
+                  <Icon size={20} className="text-white/95" strokeWidth={1.5} />
+                </div>
+                <div>
+                  <p className="text-white/90 text-sm font-semibold tracking-wide leading-snug">
+                    {title}
+                  </p>
+                </div>
+              </div>
+            </FadeUp>
+          ))}
         </div>
+
+        {/* CTA row */}
+        <FadeUp delay={0.8}>
+          <div className="flex items-center justify-center gap-4 flex-wrap">
+            <motion.button
+              whileHover={{
+                scale: 1.04,
+              }}
+              whileTap={{ scale: 0.97 }}
+              className="flex items-center gap-2.5 px-8 py-4 rounded-full text-black font-semibold text-sm shadow-xl hover:shadow-white/5 transition-all duration-300 cursor-pointer"
+              style={{
+                background: "#fff",
+                letterSpacing: "0.05em",
+              }}
+            >
+              Explore
+              <ArrowRight size={15} strokeWidth={2} />
+            </motion.button>
+          </div>
+        </FadeUp>
       </div>
     </section>
   );

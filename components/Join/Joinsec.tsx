@@ -317,7 +317,7 @@ export default function Joinsec() {
   }
 
   return (
-    <div className="min-h-screen bg-black text-white font-sans grid grid-cols-1 lg:grid-cols-12 overflow-x-hidden">
+    <div className="min-h-screen bg-black text-white font-sans grid grid-cols-1 lg:grid-cols-12 overflow-x-hidden border-b border-neutral-900">
       {/* LEFT SIDE: THE ASYMMETRIC BRANDING PANEL (Responsive Height Match)*/}
       <div className="lg:col-span-5 bg-neutral-950 border-b lg:border-b-0 lg:border-r border-neutral-900 p-8 sm:p-12 lg:p-16 flex flex-col justify-center relative min-h-80 lg:h-full overflow-hidden select-none">
         {/* Premium Background Image with Readability Shader */}
@@ -340,8 +340,7 @@ export default function Joinsec() {
             <span>Portal Onboarding</span>
           </div>
           <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-white mb-4 leading-tight">
-            Join Our <br />
-            Membership
+            Join Our Membership
           </h1>
           <p className="text-neutral-400 text-sm font-light leading-relaxed">
             Create your account across four clear onboarding channels to
