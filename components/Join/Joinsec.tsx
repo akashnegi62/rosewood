@@ -1,425 +1,425 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import {
-  motion,
-  AnimatePresence,
-  useInView,
-  useMotionValue,
-  useMotionTemplate,
-} from "framer-motion";
-import {
-  ChevronLeft,
+  User,
+  Users,
+  Mail,
+  Calendar,
+  Heart,
+  Phone,
+  MapPin,
+  Hash,
   ChevronRight,
-  ArrowRight,
-  BadgeCheck,
+  ChevronLeft,
+  CheckCircle2,
+  Landmark,
+  Navigation,
+  Compass,
 } from "lucide-react";
+import Image from "next/image";
 
-// Types
+// ─── Types
+interface FormData {
+  membershipNumber: string;
+  clientName: string;
+  spouseName: string;
+  email: string;
+  dob: string;
+  anniversary: string;
+  primaryContact: string;
+  secondaryContact: string;
+  primaryAddress: string;
+  primaryState: string;
+  primaryPin: string;
+  secondaryAddress: string;
+  secondaryState: string;
+  secondaryPin: string;
+}
 
-type Plan = {
-  years: number;
-  emi: string;
-  total: string;
-  badge?: string;
-};
+const STEPS = ["Identity", "Personal", "Contact", "Address"];
 
-type Tier = {
-  id: string;
-  label: string;
-  sub: string;
-  cardbg: string;
-  cardtext: string;
-  cardsvg: string;
-  cardbtn: string;
-  plans: Plan[];
-};
-
-// Data
-const TIERS: Tier[] = [
-  {
-    id: "ebony",
-    label: "EBONY",
-    sub: "Studio",
-    cardbg: "#000000",
-    cardtext: "#F5F0E8",
-    cardsvg: "#ffffff",
-    cardbtn: "#C8A96E",
-    plans: [
-      { years: 20, emi: "₹26,414/-", total: "₹11,65,000/-" },
-      { years: 15, emi: "₹22,106/-", total: "₹9,75,000/-", badge: "Popular" },
-      { years: 10, emi: "₹28,704/-", total: "₹7,40,000/-" },
-      { years: 5, emi: "₹41,200/-", total: "₹4,95,000/-" },
-    ],
-  },
-  {
-    id: "ivory",
-    label: "IVORY",
-    sub: "Studio",
-    cardbg: "#EAE6DD",
-    cardtext: "#1A1612",
-    cardsvg: "#191818",
-    cardbtn: "#1A1612",
-    plans: [
-      { years: 20, emi: "₹17,571/-", total: "₹7,75,000/-" },
-      { years: 15, emi: "₹14,964/-", total: "₹6,60,000/-", badge: "Popular" },
-      { years: 10, emi: "₹19,783/-", total: "₹5,10,000/-" },
-      { years: 5, emi: "₹28,500/-", total: "₹3,30,000/-" },
-    ],
-  },
-  {
-    id: "jade",
-    label: "JADE",
-    sub: "Studio",
-    cardbg: "#165B54",
-    cardtext: "#FFFFFF",
-    cardsvg: "#ffffff",
-    cardbtn: "#fff",
-    plans: [
-      { years: 20, emi: "₹11,797/-", total: "₹5,55,000/-" },
-      { years: 15, emi: "₹10,309/-", total: "₹4,85,000/-", badge: "Popular" },
-      { years: 10, emi: "₹14,364/-", total: "₹3,95,000/-" },
-      { years: 5, emi: "₹20,600/-", total: "₹2,45,000/-" },
-    ],
-  },
-];
-
-// Plan Card
-
-function PlanCard({
-  plan,
-  tier,
-  index,
+// ─── Premium Field Component
+function Field({
+  label,
+  icon,
+  children,
 }: {
-  plan: Plan;
-  tier: Tier;
-  index: number;
-  isActive: boolean;
+  label: string;
+  icon: React.ReactNode;
+  children: React.ReactNode;
 }) {
-  const [compared, setCompared] = useState(false);
-  const cardRef = useRef<HTMLDivElement>(null);
-
-  const rotateX = useMotionValue(0);
-  const rotateY = useMotionValue(0);
-
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-    const element = cardRef.current;
-    if (!element) return;
-
-    const rect = element.getBoundingClientRect();
-    const width = rect.width;
-    const height = rect.height;
-
-    const mouseX = e.clientX - rect.left - width / 2;
-    const mouseY = e.clientY - rect.top - height / 2;
-
-    const rX = -(mouseY / height) * 16;
-    const rY = (mouseX / width) * 16;
-
-    rotateX.set(rX);
-    rotateY.set(rY);
-  };
-
-  const handleMouseLeave = () => {
-    rotateX.set(0);
-    rotateY.set(0);
-  };
-
-  const transform = useMotionTemplate`perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
-
   return (
-    <motion.div
-      ref={cardRef}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
-      key={plan.years}
-      initial={{ opacity: 0, y: 24 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -24 }}
-      transition={{
-        duration: 0.35,
-        delay: index * 0.07,
-        ease: [0.22, 1, 0.36, 1],
-      }}
-      className="relative shrink-0 w-full sm:w-90 min-h-80 rounded-3xl border overflow-hidden transition-all duration-150 ease-out shadow-lg select-none"
-      style={{
-        transform,
-        background: tier.cardbg,
-        borderColor: `${tier.cardsvg}22`,
-      }}
-    >
-      {/* SVG Absolute Top-Right Background Grid Curve */}
-      <div
-        className="absolute top-0 right-0 w-72 h-48 pointer-events-none select-none opacity-[0.25] z-0"
-        style={{ color: tier.cardsvg }}
-      >
-        <svg
-          viewBox="0 0 100 100"
-          className="w-full h-full stroke-current fill-none stroke-[0.75]"
-        >
-          <path d="M30,-20 Q80,20 130,40 M10,-20 Q70,30 130,60 M-10,-20 Q60,40 130,80 M-30,-20 Q50,50 130,100" />
-        </svg>
-      </div>
-
-      <div className="p-6 md:p-7 relative z-10 flex flex-col justify-between min-h-80">
-        <div>
-          {/* Header */}
-          <div className="flex items-center justify-between mb-6">
-            <div>
-              <p
-                className="text-lg tracking-widest font-black uppercase"
-                style={{ color: tier.cardsvg }}
-              >
-                {tier.label}
-              </p>
-              <p
-                className="text-sm font-medium mt-0.5"
-                style={{ color: tier.cardtext, opacity: 0.6 }}
-              >
-                {tier.sub}
-              </p>
-            </div>
-            <div
-              className="text-sm font-bold px-3 py-1.5 rounded-lg"
-              style={{ background: tier.cardsvg + "18", color: tier.cardsvg }}
-            >
-              {plan.years} Yrs
-            </div>
-          </div>
-
-          {/* Divider */}
-          <div
-            className="h-px mb-6"
-            style={{ background: `${tier.cardsvg}22` }}
-          />
-
-          {/* Pricing */}
-          <div className="grid grid-cols-2 gap-3 mb-6">
-            <div>
-              <p
-                className="text-[11px] mb-1"
-                style={{ color: tier.cardtext, opacity: 0.6 }}
-              >
-                EMI Starts at
-              </p>
-              <p
-                className="text-lg font-bold leading-tight"
-                style={{ color: tier.cardtext }}
-              >
-                {plan.emi}
-              </p>
-            </div>
-            <div>
-              <p
-                className="text-[11px] mb-1"
-                style={{ color: tier.cardtext, opacity: 0.6 }}
-              >
-                Total Cost
-              </p>
-              <p
-                className="text-lg font-bold leading-tight"
-                style={{ color: tier.cardtext }}
-              >
-                {plan.total}
-              </p>
-            </div>
-          </div>
-        </div>
-
-        {/* Actions */}
-        <div className="flex flex-col gap-2">
-          <motion.button
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.97 }}
-            className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-bold tracking-wide transition-all cursor-pointer"
-            style={{ background: tier.cardbtn, color: tier.cardbg }}
-          >
-            Buy Now <ArrowRight size={14} />
-          </motion.button>
-
-          <motion.button
-            whileTap={{ scale: 0.97 }}
-            onClick={() => setCompared((p) => !p)}
-            className="w-full flex items-center justify-center gap-1.5 py-2 rounded-xl text-xs font-medium border transition-all cursor-pointer"
-            style={{
-              borderColor: compared ? tier.cardsvg : `${tier.cardsvg}22`,
-              color: compared ? tier.cardsvg : tier.cardtext,
-              background: compared ? tier.cardsvg + "12" : "transparent",
-            }}
-          >
-            {compared ? (
-              <>
-                <BadgeCheck size={12} /> Added to Compare
-              </>
-            ) : (
-              <>+ Add to Compare</>
-            )}
-          </motion.button>
-        </div>
-      </div>
-    </motion.div>
+    <div className="group flex flex-col gap-2 w-full">
+      <label className="flex items-center gap-2 text-xs font-semibold tracking-[0.2em] uppercase text-neutral-400 group-focus-within:text-cyan-400 transition-colors">
+        <span className="text-neutral-600 group-focus-within:text-cyan-400 transition-colors">
+          {icon}
+        </span>
+        {label}
+      </label>
+      {children}
+    </div>
   );
 }
 
-// Tier Section
+const inputClass =
+  "w-full bg-neutral-900/60 border border-neutral-800/80 rounded-2xl px-5 py-4 text-white placeholder:text-neutral-600 text-base focus:outline-none focus:border-cyan-500/50 focus:bg-neutral-900 transition-all duration-300 hover:border-neutral-700/60 shadow-inner";
 
-function TierSection({ tier }: { tier: Tier }) {
-  const [offset, setOffset] = useState(0);
-  const [cardsToShow, setCardsToShow] = useState(3);
-  const ref = useRef(null);
-  const inView = useInView(ref, { once: true, margin: "-80px" });
-
-  useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth < 640) {
-        setCardsToShow(1);
-      } else if (window.innerWidth < 1024) {
-        setCardsToShow(2);
-      } else {
-        setCardsToShow(3);
-      }
-    };
-    handleResize();
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
-
-  const maxOffset = Math.max(0, tier.plans.length - cardsToShow);
-
-  useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setOffset((o) => Math.min(o, maxOffset));
-  }, [cardsToShow, maxOffset]);
-
-  const prev = () => setOffset((o) => Math.max(0, o - 1));
-  const next = () => setOffset((o) => Math.min(maxOffset, o + 1));
-  const visible = tier.plans.slice(offset, offset + cardsToShow);
-
+function Divider({ label }: { label: string }) {
   return (
-    <motion.section
-      ref={ref}
-      initial={{ opacity: 0, y: 40 }}
-      animate={inView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-      className="mb-20 w-full max-w-6xl mx-auto px-4 md:px-0"
-    >
-      {/* Section header */}
-      <div className="flex items-end justify-between mb-6 w-full">
-        <div>
-          <motion.h2
-            initial={{ opacity: 0, x: -20 }}
-            animate={inView ? { opacity: 1, x: 0 } : {}}
-            transition={{ duration: 0.5, delay: 0.1 }}
-            className="text-3xl font-black tracking-[0.12em] uppercase text-white"
-          >
-            {tier.label}
-          </motion.h2>
-          <div className="h-0.5 mt-1.5 w-12 rounded-full bg-white/30" />
-        </div>
-
-        <div className="flex gap-2">
-          {[
-            { fn: prev, icon: ChevronLeft, disabled: offset === 0 },
-            { fn: next, icon: ChevronRight, disabled: offset >= maxOffset },
-          ].map(({ fn, icon: Icon, disabled }, i) => (
-            <motion.button
-              key={i}
-              whileHover={!disabled ? { scale: 1.1 } : {}}
-              whileTap={!disabled ? { scale: 0.9 } : {}}
-              onClick={fn}
-              disabled={disabled}
-              className="w-9 h-9 rounded-full flex items-center justify-center border transition-all"
-              style={{
-                borderColor: disabled ? "#333" : "#fff",
-                color: disabled ? "#444" : "#fff",
-                background: disabled
-                  ? "transparent"
-                  : "rgba(255, 255, 255, 0.08)",
-                cursor: disabled ? "not-allowed" : "pointer",
-              }}
-            >
-              <Icon size={16} />
-            </motion.button>
-          ))}
-        </div>
-      </div>
-
-      {/* Cards */}
-      <div className="relative overflow-hidden w-full">
-        <AnimatePresence mode="popLayout">
-          <motion.div
-            key={offset}
-            className="flex gap-4 w-full md:w-fit justify-center md:justify-start"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
-          >
-            {visible.map((plan, i) => (
-              <PlanCard
-                key={plan.years}
-                plan={plan}
-                tier={tier}
-                index={i}
-                isActive={plan.badge === "Popular"}
-              />
-            ))}
-          </motion.div>
-        </AnimatePresence>
-      </div>
-
-      {/* Dot indicators */}
-      <div className="flex gap-1.5 mt-5 justify-center">
-        {Array.from({ length: maxOffset + 1 }).map((_, i) => (
-          <motion.button
-            key={i}
-            onClick={() => setOffset(i)}
-            animate={{
-              width: i === offset ? 20 : 6,
-              opacity: i === offset ? 1 : 0.25,
-            }}
-            transition={{ duration: 0.25 }}
-            className="h-1.5 rounded-full bg-white"
-          />
-        ))}
-      </div>
-    </motion.section>
+    <div className="flex items-center gap-4 my-4 w-full">
+      <span className="text-xs tracking-[0.2em] uppercase text-cyan-400 font-bold whitespace-nowrap">
+        {label}
+      </span>
+      <div className="h-px flex-1 bg-linear-to-r from-neutral-800 to-transparent" />
+    </div>
   );
 }
 
-// Page
+// ─── Main Component
+export default function Joinsec() {
+  const [step, setStep] = useState(0);
+  const [submitted, setSubmitted] = useState(false);
+  const [direction, setDirection] = useState(1);
 
-export default function JoinSec() {
-  return (
-    <main className="min-h-screen bg-black px-6 py-16">
-      <div className="max-w-6xl mx-auto relative z-10">
-        {/* Hero header */}
+  const [form, setForm] = useState<FormData>({
+    membershipNumber: "",
+    clientName: "",
+    spouseName: "",
+    email: "",
+    dob: "",
+    anniversary: "",
+    primaryContact: "",
+    secondaryContact: "",
+    primaryAddress: "",
+    primaryState: "",
+    primaryPin: "",
+    secondaryAddress: "",
+    secondaryState: "",
+    secondaryPin: "",
+  });
+
+  const set =
+    (key: keyof FormData) => (e: React.ChangeEvent<HTMLInputElement>) =>
+      setForm((f) => ({ ...f, [key]: e.target.value }));
+
+  const next = () => {
+    setDirection(1);
+    setStep((s) => Math.min(s + 1, STEPS.length - 1));
+  };
+  const prev = () => {
+    setDirection(-1);
+    setStep((s) => Math.max(s - 1, 0));
+  };
+  const submit = () => setSubmitted(true);
+
+  const slideVariants = {
+    enter: (d: number) => ({
+      x: d > 0 ? 30 : -30,
+      opacity: 0,
+    }),
+    center: { x: 0, opacity: 1 },
+    exit: (d: number) => ({
+      x: d > 0 ? -30 : 30,
+      opacity: 0,
+    }),
+  };
+
+  // ── Step panels
+  const panels = [
+    <div key="identity" className="flex flex-col gap-6">
+      <Field label="Membership Number" icon={<Hash size={14} />}>
+        <input
+          className={inputClass}
+          placeholder="MEM-00001"
+          value={form.membershipNumber}
+          onChange={set("membershipNumber")}
+        />
+      </Field>
+      <Field label="Client's Full Name" icon={<User size={14} />}>
+        <input
+          className={inputClass}
+          placeholder="John Alexander"
+          value={form.clientName}
+          onChange={set("clientName")}
+        />
+      </Field>
+      <Field label="Spouse's Full Name" icon={<Users size={14} />}>
+        <input
+          className={inputClass}
+          placeholder="Jane Alexander"
+          value={form.spouseName}
+          onChange={set("spouseName")}
+        />
+      </Field>
+      <Field label="Email Address" icon={<Mail size={14} />}>
+        <input
+          type="email"
+          className={inputClass}
+          placeholder="john@example.com"
+          value={form.email}
+          onChange={set("email")}
+        />
+      </Field>
+    </div>,
+
+    <div key="personal" className="flex flex-col gap-6">
+      <Field label="Date of Birth" icon={<Calendar size={14} />}>
+        <input
+          type="date"
+          className={`${inputClass} scheme-dark`}
+          value={form.dob}
+          onChange={set("dob")}
+        />
+      </Field>
+      <Field label="Marriage Anniversary" icon={<Heart size={14} />}>
+        <input
+          type="date"
+          className={`${inputClass} scheme-dark`}
+          value={form.anniversary}
+          onChange={set("anniversary")}
+        />
+      </Field>
+    </div>,
+
+    <div key="contact" className="flex flex-col gap-6">
+      <Field label="Primary Contact" icon={<Phone size={14} />}>
+        <input
+          type="tel"
+          className={inputClass}
+          placeholder="+91 98765 43210"
+          value={form.primaryContact}
+          onChange={set("primaryContact")}
+        />
+      </Field>
+      <Field label="Secondary Contact" icon={<Phone size={14} />}>
+        <input
+          type="tel"
+          className={inputClass}
+          placeholder="+91 91234 56789"
+          value={form.secondaryContact}
+          onChange={set("secondaryContact")}
+        />
+      </Field>
+    </div>,
+
+    <div key="address" className="flex flex-col gap-6">
+      <Divider label="Primary Location" />
+      <Field label="Street / Locality" icon={<MapPin size={14} />}>
+        <input
+          className={inputClass}
+          placeholder="123, Park Street"
+          value={form.primaryAddress}
+          onChange={set("primaryAddress")}
+        />
+      </Field>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <Field label="State" icon={<Landmark size={14} />}>
+          <input
+            className={inputClass}
+            placeholder="Uttar Pradesh"
+            value={form.primaryState}
+            onChange={set("primaryState")}
+          />
+        </Field>
+        <Field label="Pin Code" icon={<Navigation size={14} />}>
+          <input
+            className={inputClass}
+            placeholder="201001"
+            maxLength={6}
+            value={form.primaryPin}
+            onChange={set("primaryPin")}
+          />
+        </Field>
+      </div>
+
+      <Divider label="Secondary Location" />
+      <Field label="Street / Locality" icon={<MapPin size={14} />}>
+        <input
+          className={inputClass}
+          placeholder="456, Lake Avenue"
+          value={form.secondaryAddress}
+          onChange={set("secondaryAddress")}
+        />
+      </Field>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <Field label="State" icon={<Landmark size={14} />}>
+          <input
+            className={inputClass}
+            placeholder="Maharashtra"
+            value={form.secondaryState}
+            onChange={set("secondaryState")}
+          />
+        </Field>
+        <Field label="Pin Code" icon={<Navigation size={14} />}>
+          <input
+            className={inputClass}
+            placeholder="400001"
+            maxLength={6}
+            value={form.secondaryPin}
+            onChange={set("secondaryPin")}
+          />
+        </Field>
+      </div>
+    </div>,
+  ];
+
+  if (submitted) {
+    return (
+      <div className="min-h-screen bg-black flex items-center justify-center p-6">
         <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-          className="mb-16 text-center"
+          initial={{ scale: 0.95, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ type: "spring", stiffness: 200, damping: 25 }}
+          className="text-center flex flex-col items-center gap-6 max-w-sm"
         >
-          <p className="text-xs tracking-[0.3em] uppercase text-white mb-3">
-            Investment Plans
-          </p>
-          <h1 className="text-5xl font-black tracking-tight text-white mb-4">
-            Choose Your{" "}
-            <span className="bg-linear-to-r from-[#C8A96E] via-[#E8C98E] to-[#4ECCA3] bg-clip-text text-transparent">
-              Tier
-            </span>
-          </h1>
-          <p className="text-white max-w-md mx-auto text-sm leading-relaxed">
-            Flexible EMI plans across three premium tiers. Now with a new 5‑year
-            quick‑pay option.
-          </p>
+          <div className="w-20 h-20 rounded-full bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center shadow-[0_0_40px_rgba(6,182,212,0.15)]">
+            <CheckCircle2 size={36} className="text-cyan-400" />
+          </div>
+          <div>
+            <h2 className="text-2xl font-bold text-white mb-2">
+              Welcome, {form.clientName || "Member"}!
+            </h2>
+            <p className="text-neutral-400 text-sm leading-relaxed">
+              Your registration application has been processed into the secure
+              ecosystem.
+            </p>
+          </div>
+          <button
+            onClick={() => {
+              setSubmitted(false);
+              setStep(0);
+              setForm({
+                membershipNumber: "",
+                clientName: "",
+                spouseName: "",
+                email: "",
+                dob: "",
+                anniversary: "",
+                primaryContact: "",
+                secondaryContact: "",
+                primaryAddress: "",
+                primaryState: "",
+                primaryPin: "",
+                secondaryAddress: "",
+                secondaryState: "",
+                secondaryPin: "",
+              });
+            }}
+            className="text-xs text-neutral-500 hover:text-neutral-300 transition-colors underline underline-offset-4 cursor-pointer"
+          >
+            Submit another profile
+          </button>
         </motion.div>
-
-        {/* Tier sections */}
-        {TIERS.map((tier) => (
-          <TierSection key={tier.id} tier={tier} />
-        ))}
       </div>
-    </main>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-black text-white font-sans grid grid-cols-1 lg:grid-cols-12 overflow-x-hidden">
+      {/* LEFT SIDE: THE ASYMMETRIC BRANDING PANEL (Responsive Height Match)*/}
+      <div className="lg:col-span-5 bg-neutral-950 border-b lg:border-b-0 lg:border-r border-neutral-900 p-8 sm:p-12 lg:p-16 flex flex-col justify-center relative min-h-80 lg:h-full overflow-hidden select-none">
+        {/* Premium Background Image with Readability Shader */}
+        <div className="absolute inset-0 z-0 pointer-events-none">
+          <Image
+            src="https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=1200&q=80" // Replace with your vacation/landscape asset
+            alt="Onboarding Background"
+            fill
+            priority
+            className="object-cover object-center brightness-[0.2] contrast-[1.05]"
+          />
+          {/* Dark radial vignetting gradient to pull focus onto typography */}
+          <div className="absolute inset-0 bg-linear-to-tr from-black via-black/80 to-transparent" />
+        </div>
+
+        {/* Content Layer */}
+        <div className="relative z-10 w-full max-w-sm">
+          <div className="flex items-center gap-2 text-cyan-400 font-medium text-xs tracking-[0.3em] uppercase mb-6 sm:mb-8">
+            <Compass className="w-4 h-4 animate-spin-slow" />
+            <span>Portal Onboarding</span>
+          </div>
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-white mb-4 leading-tight">
+            Join Our <br />
+            Membership
+          </h1>
+          <p className="text-neutral-400 text-sm font-light leading-relaxed">
+            Create your account across four clear onboarding channels to
+            seamlessly unlock exclusive member privileges.
+          </p>
+        </div>
+      </div>
+
+      {/* RIGHT SIDE: UNBOUNDED FLOATING INPUT FIELDS SECTION */}
+      <div className="lg:col-span-7 flex flex-col justify-center p-6 sm:p-12 lg:p-20 xl:p-28 relative bg-black min-h-125">
+        <div className="w-full max-w-xl mx-auto flex flex-col justify-between h-full">
+          {/* Dynamic Input Form Wrapper (Completely outside traditional rigid cards) */}
+          <div className="relative overflow-hidden min-h-85 py-4">
+            <AnimatePresence mode="wait" custom={direction}>
+              <motion.div
+                key={step}
+                custom={direction}
+                variants={slideVariants}
+                initial="enter"
+                animate="center"
+                exit="exit"
+                transition={{ duration: 0.35, ease: [0.25, 1, 0.5, 1] }}
+                className="w-full"
+              >
+                <div className="mb-6">
+                  <span className="text-[10px] tracking-[0.25em] font-mono text-cyan-500/80 uppercase font-bold">
+                    Section // 0{step + 1}
+                  </span>
+                  <h2 className="text-xl font-bold text-neutral-200 tracking-wide mt-0.5">
+                    Configure your {STEPS[step]} details
+                  </h2>
+                </div>
+                {panels[step]}
+              </motion.div>
+            </AnimatePresence>
+          </div>
+
+          {/* Bottom Action Control Bar */}
+          <div className="flex items-center justify-between mt-12 pt-6 border-t border-neutral-900 w-full">
+            <motion.button
+              onClick={prev}
+              disabled={step === 0}
+              whileTap={{ scale: 0.96 }}
+              className="flex items-center gap-2 text-sm font-medium text-neutral-500 hover:text-neutral-300 disabled:opacity-0 disabled:pointer-events-none transition-colors cursor-pointer py-2"
+            >
+              <ChevronLeft size={16} />
+              Back
+            </motion.button>
+
+            <span className="text-xs text-neutral-600 font-mono tracking-widest hidden sm:inline">
+              {step + 1} &mdash; {STEPS.length}
+            </span>
+
+            {step < STEPS.length - 1 ? (
+              <motion.button
+                onClick={next}
+                whileTap={{ scale: 0.96 }}
+                className="flex items-center gap-1.5 text-sm font-semibold text-cyan-400 hover:text-cyan-300 transition-colors cursor-pointer py-2"
+              >
+                Continue
+                <ChevronRight size={16} />
+              </motion.button>
+            ) : (
+              <motion.button
+                onClick={submit}
+                whileHover={{
+                  scale: 1.02,
+                }}
+                whileTap={{ scale: 0.97 }}
+                className="flex items-center gap-2 bg-white text-black text-sm font-bold px-7 py-3 rounded-full transition-all cursor-pointer"
+              >
+                Complete Submission
+                <CheckCircle2 size={15} />
+              </motion.button>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }

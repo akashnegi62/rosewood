@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { ChevronLeft, ChevronRight, Sparkles } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 // --- Types ---
 interface SlideData {
@@ -20,14 +20,16 @@ const slides: SlideData[] = [
     id: 1,
     country: "Japan",
     title: "In het hart van Honshu",
-    imageUrl: "/medias/63257/resize/1100x0/shutterstock-1220336509.webp",
+    imageUrl:
+      "https://plus.unsplash.com/premium_photo-1661964177687-57387c2cbd14?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     type: "Individuele reis",
   },
   {
     id: 2,
     country: "Tibet & China",
     title: "Het dak van de wereld met de Hemeltrein",
-    imageUrl: "/medias/74624/resize/1100x0/billow926-304JgmUi1e8-unsplash.webp",
+    imageUrl:
+      "https://images.unsplash.com/photo-1548013146-72479768bada?auto=format&fit=crop&w=1200&q=80",
     type: "Individuele reis",
   },
   {
@@ -35,36 +37,72 @@ const slides: SlideData[] = [
     country: "Costa Rica",
     title: "Het wilde zuiden van Costa Rica",
     imageUrl:
-      "/medias/54854/resize/1100x0/Turrialbashutterstock-1062463487.webp",
+      "https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?auto=format&fit=crop&w=1200&q=80",
     type: "Individuele reis",
   },
   {
     id: 4,
     country: "Mexico",
     title: "Tesoros de México",
-    imageUrl: "/medias/87750/resize/1100x0/Pueblashutterstock-125210186.webp",
+    imageUrl:
+      "https://images.unsplash.com/photo-1518105779142-d975f22f1b0a?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     type: "Individuele reis",
   },
   {
     id: 5,
     country: "Egypte",
     title: "Eeuwigheid langs de Nijl",
-    imageUrl: "/medias/94219/resize/1100x0/KARNAK-TEMPLE-1.webp",
+    imageUrl:
+      "https://images.unsplash.com/photo-1539650116574-8efeb43e2750?auto=format&fit=crop&w=1200&q=80",
     type: "Groep",
   },
   {
     id: 6,
     country: "Marokko",
     title: "Van Atlas tot Sahara",
-    imageUrl: "/medias/94167/resize/1100x0/MERZOUGA-2.webp",
+    imageUrl:
+      "https://images.unsplash.com/photo-1489749798305-4fea3ae63d43?auto=format&fit=crop&w=1200&q=80",
     type: "Individuele reis",
   },
   {
     id: 7,
     country: "Kaapverdië",
     title: "Fogo & Santiago",
-    imageUrl: "/medias/92434/resize/1100x0/Fogo-Ingrid.webp",
+    imageUrl:
+      "https://images.unsplash.com/photo-1542856391-010fb87dcfed?auto=format&fit=crop&w=1200&q=80",
     type: "Individuele reis",
+  },
+  {
+    id: 8,
+    country: "India",
+    title: "Taj Mahal & de Gouden Driehoek",
+    imageUrl:
+      "https://images.unsplash.com/photo-1564507592333-c60657eea523?auto=format&fit=crop&w=1200&q=80",
+    type: "Individuele reis",
+  },
+  {
+    id: 9,
+    country: "India",
+    title: "Koninklijk Rajasthan & Paleizen",
+    imageUrl:
+      "https://images.unsplash.com/photo-1599661046289-e31897846e41?auto=format&fit=crop&w=1200&q=80",
+    type: "Individuele reis",
+  },
+  {
+    id: 10,
+    country: "India",
+    title: "Groene heuvels & backwaters van Kerala",
+    imageUrl:
+      "https://images.unsplash.com/photo-1593693397690-362cb9666fc2?auto=format&fit=crop&w=1200&q=80",
+    type: "Individuele reis",
+  },
+  {
+    id: 11,
+    country: "India",
+    title: "Langs de heilige Ganges in Varanasi",
+    imageUrl:
+      "https://images.unsplash.com/photo-1627938823193-fd13c1c867dd?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    type: "Groep",
   },
 ];
 
@@ -191,8 +229,11 @@ const Carousel = () => {
                   {/* Image Container - Clean, no brightness filter */}
                   <div className="relative w-full h-full">
                     <Image
-                      // Fallback to picsum if relative path fails in demo
-                      src={`https://picsum.photos/seed/${slide.id}/1200/900`}
+                      src={
+                        slide.imageUrl.startsWith("http")
+                          ? slide.imageUrl
+                          : `https://picsum.photos/seed/${slide.id}/1200/900`
+                      }
                       alt={slide.title}
                       fill
                       sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
@@ -202,14 +243,6 @@ const Carousel = () => {
 
                   {/* Content Overlay - Only fully visible on active slide */}
                   <div className="absolute inset-0 flex flex-col items-center justify-center text-white p-8 text-center bg-black/10">
-                    {/* Badge */}
-                    <div
-                      className={`absolute top-4 right-4 bg-white/95 backdrop-blur-sm text-black px-3 py-1.5 rounded-full flex items-center gap-2 text-[10px] font-bold uppercase tracking-wider shadow-sm transition-all duration-300 ${isActive ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2"}`}
-                    >
-                      <Sparkles size={10} />
-                      {slide.type}
-                    </div>
-
                     {/* Text Content */}
                     <div
                       className={`transition-all duration-500 transform ${isActive ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}

@@ -7,39 +7,39 @@ import { ArrowLeft, ArrowRight } from "lucide-react";
 const destinations = [
   {
     id: 1,
-    name: "Tanzania",
+    name: "Lucknow",
     image:
-      "https://images.unsplash.com/photo-1546182990-dffeafbe841d?w=600&q=85",
+      "https://images.unsplash.com/photo-1659202313780-1d8c8beea7d3?q=80&w=736&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
   },
   {
     id: 2,
-    name: "Uganda",
+    name: "Agra",
     image:
-      "https://images.unsplash.com/photo-1564760055775-d63b17a55c44?w=600&q=85",
+      "https://images.unsplash.com/photo-1724947053227-2335bf21d0ae?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
   },
   {
     id: 3,
-    name: "Namibia",
+    name: "Rishikesh",
     image:
-      "https://images.unsplash.com/photo-1518020382113-a7e8fc38eac9?w=600&q=85",
+      "https://images.unsplash.com/photo-1650341259809-9314b0de9268?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
   },
   {
     id: 4,
-    name: "Botswana",
+    name: "Jim Corbett",
     image:
-      "https://images.unsplash.com/photo-1534188753412-3e26d0d618d6?w=600&q=85",
+      "https://images.unsplash.com/photo-1510798831971-661eb04b3739?w=600&q=85",
   },
   {
     id: 5,
-    name: "Kenya",
+    name: "Nanital",
     image:
-      "https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?w=600&q=85",
+      "https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=600&q=85",
   },
   {
     id: 6,
-    name: "Zimbabwe",
+    name: "Bhimtal",
     image:
-      "https://images.unsplash.com/photo-1551009175-8a68da93d5f9?w=600&q=85",
+      "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=600&q=85",
   },
 ];
 
